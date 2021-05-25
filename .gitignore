@@ -127,3 +127,16 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+# issuetracker specific stuff
+config.json    # contains credentials
+migrations/*    # each migrations directory has to have __init__.py 
+post_imgs/*
+__pycache__/*
+
+
+
+
+
+
