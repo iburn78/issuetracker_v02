@@ -13,7 +13,7 @@
       <link rel="stylesheet" href="{% static 'blog/issuetracker_style.css' %}" />
 
     	<!-- Website title and logo -->
-		  <title> Issue Tracker</title>
+		  <title>IssueTracker</title>
       <link rel="icon" href="{% static 'blog/IssueTracker_Logo.png' %}">
       <script src="https://cdn.tiny.cloud/1/d3ybxjdg3551popw6ium8p70cc82tgln8qwiu8yrc9x9v6rm/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script> 
       <script>tinymce.init({selector:'textarea'});</script>
@@ -22,24 +22,30 @@
         <header class="site-header">
           <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
             <div class="container">
-				      <a class="navbar-brand mr-4" href="{% url 'blog-home' %}">Issue Tracker <small><i>(beta)</i></small></a>
+				      <a class="navbar-brand mr-4" href="{% url 'blog-home' %}">IssueTracker<small><i>(beta)</i></small></a>
               <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
               <div class="collapse navbar-collapse" id="navbarToggle">
+              
                 <div class="navbar-nav mr-auto">
-                  <a class="nav-item nav-link" href="{% url 'blog-home' %}">Posts</a>
-                  <a class="nav-item nav-link" href="{% url 'post-compact-list' %}">List</a>
+                  <a class="nav-item nav-link" href="{% url 'blog-home' %}">post</a>
+                  <a class="nav-item nav-link" href="{% url 'post-compact-list' %}">list</a>
+		       {% if user.is_authenticated %}
+                  <a class="nav-item nav-link" href="{% url 'post-private' %}">private</a>
+                  <a class="nav-item nav-link" href="{% url 'privatepost-compact-list' %}">p-list</a>
+		       {% endif %}
                 </div>
                 <!-- Navbar Right Side -->
                 <div class="navbar-nav">
 		               {% if user.is_authenticated %}
-		                   <a class="nav-item nav-link" href="{% url 'post-create' %}">New Post</a>
-		                   <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
-		                   <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+		                   <a class="nav-item nav-link" href="{% url 'post-create' %}">new post</a>
+		                   <a class="nav-item nav-link" href="{% url 'privatepost-create' %}">new private</a>
+		                   <a class="nav-item nav-link" href="{% url 'profile' %}">profile</a>
+		                   <a class="nav-item nav-link" href="{% url 'logout' %}">logout</a>
 		               {% else %}
-                       <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-                       <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+                       <a class="nav-item nav-link" href="{% url 'login' %}">login</a>
+                       <a class="nav-item nav-link" href="{% url 'register' %}">register</a>
 		               {% endif %}
                 </div>
               </div>
@@ -65,8 +71,12 @@
                 <p class='text-muted'> more on issuetracker...
                   <ul class="list-group">
                     <li class="list-group-item list-group-item-light"><a href="{% url 'blog-about' %}">About Issue Tracker</a></li>
-                    <li class="list-group-item list-group-item-light"><a href="{% url 'search-form' %}">Search posts</a></li>
-                    <li class="list-group-item list-group-item-light"><a href="{% url 'website-stats' %}">Issue Tracker statistics</a></li>
+                    <li class="list-group-item list-group-item-light"><a href="{% url 'search-form' %}">Search post</a></li>
+		       {% if user.is_authenticated %}
+                    <li class="list-group-item list-group-item-light"><a href="{% url 'privatesearch-form' %}">Search private</a></li>
+               {% endif %}
+                    <li class="list-group-item list-group-item-light"><a href="{% url 'website-stats' %}">IssueTracker statistics</a></li>
+                    <li class="list-group-item list-group-item-light"><a href="{% url 'author-list' %}">Author list</a></li>
                   </ul>
                 </p>
               </div>

@@ -3,7 +3,7 @@
 {% block content %}
 <script src="https://cdn.ckeditor.com/ckeditor5/16.0.0/inline/ckeditor.js"></script>
     <div class="content-section">
-	<form method="POST" enctype="multipart/form-data">
+	<form method="POST" enctype="multipart/form-data" autocomplete="off">
 	    {% csrf_token %}
 	    <fieldset class ="form-group">
 			<legend class="border-bottom mb-4">New Post / Update Post</legend>

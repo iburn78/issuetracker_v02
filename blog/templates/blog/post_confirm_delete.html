@@ -9,7 +9,11 @@
 		    </fieldset>
 		    <div class="from-group">
 				<button class="btn btn-outline-danger" type="submit">Yes, Delete</button>
+	    {% if post.level == "private" %}
+				<a class="btn btn-outline-secondary" href="{% url 'privatepost-detail' object.id %}">Cancel</a>
+        {% else %}
 				<a class="btn btn-outline-secondary" href="{% url 'post-detail' object.id %}">Cancel</a>
+	    {% endif %}
 		    </div>
 		</form>
     </div>
