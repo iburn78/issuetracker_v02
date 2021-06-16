@@ -14,7 +14,7 @@ from pathlib import Path
 import json
 import os
 
-with open('/home/ubuntu/issuetracker/issuetracker/config.json') as config_file:
+with open('./issuetracker/config.json') as config_file:
     config = json.load(config_file)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -29,7 +29,7 @@ SECRET_KEY = config['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['52.78.166.22', 'issuetracker.info']
+ALLOWED_HOSTS = ['52.78.166.22', 'issuetracker.info', 'localhost']
 
 
 # Application definition
@@ -106,7 +106,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/

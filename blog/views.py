@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import (
         ListView, 
@@ -8,7 +9,7 @@ from django.views.generic import (
         DeleteView
         )
 from django.http import HttpResponse
-from blog.models import Post, PrivatePost, User
+from blog.models import Post, PrivatePost
 from taggit.models import Tag
 from django.views.generic.edit import FormView
 from blog.forms import PostSearchForm, PrivatePostSearchForm
