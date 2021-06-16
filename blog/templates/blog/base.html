@@ -67,16 +67,16 @@
             </div>
             <div class="col-md-4">
               <div class="content-section">
-		            <h5><img class="article-img" src="{% static 'blog/IssueTracker_Logo.png' %}">Issue Tracker <small><i>(beta)</i></small></h5>
-                <p class='text-muted'> more on issuetracker...
+		            <h5><img class="article-img" src="{% static 'blog/IssueTracker_Logo.png' %}">IssueTracker<small><i>(beta)</i></small></h5>
+                <p class='text-muted'> more on IssueTracker...
                   <ul class="list-group">
-                    <li class="list-group-item list-group-item-light"><a href="{% url 'blog-about' %}">About Issue Tracker</a></li>
-                    <li class="list-group-item list-group-item-light"><a href="{% url 'search-form' %}">Search post</a></li>
+                    <li class="list-group-item list-group-item-light"><a href="{% url 'blog-about' %}">about IssueTracker</a></li>
+                    <li class="list-group-item list-group-item-light"><a href="{% url 'search-form' %}">search post</a></li>
 		       {% if user.is_authenticated %}
-                    <li class="list-group-item list-group-item-light"><a href="{% url 'privatesearch-form' %}">Search private</a></li>
+                    <li class="list-group-item list-group-item-light"><a href="{% url 'privatesearch-form' %}">search private</a></li>
                {% endif %}
                     <li class="list-group-item list-group-item-light"><a href="{% url 'website-stats' %}">IssueTracker statistics</a></li>
-                    <li class="list-group-item list-group-item-light"><a href="{% url 'author-list' %}">Author list</a></li>
+                    <li class="list-group-item list-group-item-light"><a href="{% url 'author-list' %}">author list</a></li>
                   </ul>
                 </p>
               </div>
