@@ -2,6 +2,7 @@ from django.urls import path
 
 from blog.views import (
         AuthorListView,
+        TagListView,
         PostListView, 
         PostDetailView, 
         PostCreateView,
@@ -31,6 +32,7 @@ from blog import views
 urlpatterns = [
     path('', PostListView.as_view(), name='blog-home'), 
     path('authors/', AuthorListView.as_view(), name='author-list'), 
+    path('tags/', TagListView.as_view(), name='tag-list'), 
     path('private/', PrivatePostListView.as_view(), name='post-private'), 
     path('user/<str:username>', UserPostListView.as_view(), name='user-posts'), 
     path('user/<str:username>/private/', UserPrivatePostListView.as_view(), name='user-privateposts'), 

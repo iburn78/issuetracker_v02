@@ -1,5 +1,8 @@
 {% extends "blog/base.html" %}
 {% block content %}
+    {% if level == 'private' %}
+	<div class="alert alert-primary" role="alert">private articles for {{ user }} </div>
+    {% endif %}
 <article>  <!-- class="media content-section"> -->
 	<div class="border-top border-warning"></div>
   <div class="media-body">
@@ -44,8 +47,8 @@
   <p class="article-content mt-2 mb-1">{{ object.content | safe }}</p>
 </article>
 <p align = 'right'><small class="text-muted">-- issuetracker post ({{object.level}})</small><p>
-	    {% if post.level == "private" %}
-<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'privatepost-compact-list' %}">p-list</a>
+	    {% if level == "private" %}
+<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'privatepost-compact-list' %}">list</a>
 <a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'post-private' %}">private</a>
         {% else %}
 <a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'post-compact-list' %}">list</a>

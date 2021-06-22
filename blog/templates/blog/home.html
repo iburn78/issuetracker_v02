@@ -1,22 +1,18 @@
 {% extends "blog/base.html" %}
 {% block content %}
-    {% if common_tags.count != 0 %}
-    <p>{% if level == "private" %}
-        private articles for {{ user }} <br>
+    {% if level == "private" %}
+	<div class="alert alert-primary" role="alert">private articles for {{ user }} </div>
 	{% endif %}
-	popular: 
+    {% if common_tags.count != 0 %}
+	popular tags: 
     {% endif %}
-
     {% for mt in common_tags %}
 	    {% if level == "private" %}
         <a href="{% url 'tagged-privateposts' mt.id %}" class="badge badge-success">#{{mt}}</a>
         {% else %}
         <a href="{% url 'tagged-posts' mt.id %}" class="badge badge-success">#{{mt}}</a>
 	    {% endif %}
-
 	{% endfor %}
-	</p>
-
     {% if posts.count == 0 %}
     <p>There is no post yet... </p>
     {% endif %}
@@ -64,10 +60,15 @@
 			<p align = 'right'><small class="text-muted">-- issuetracker post ({{post.level}})</small></p>
 		</article>
 	{% endfor %}
+	    {% if level == "private" %}
+<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'privatepost-compact-list' %}">private list</a>
+        {% else %}
+<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'post-compact-list' %}">public list</a>
+	    {% endif %}
 	{% if is_paginated %}
         {% if page_obj.has_previous %}
-	        <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
-		 	<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+	        <a class="btn btn-outline-info mb-4" href="?page=1">first</a>
+		 	<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">prev</a>
 	    {% endif %}
 
 	    {% for num in page_obj.paginator.page_range %}
@@ -79,8 +80,8 @@
 		{% endfor %}
 
 	    {% if page_obj.has_next %}
-		    <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
-			<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+		    <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">next</a>
+			<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">last</a>
 	    {% endif %}
 	{% endif %}
 {% endblock content %}

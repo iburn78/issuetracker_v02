@@ -1,21 +1,19 @@
 {% extends "blog/base.html" %}
 {% block content %}
-    {% for author in authors %}
-        {% if author.is_active %}
+    {% for tag in public_tags %}
     	<div class="list_indent">
-            <a class="mr-2" href="{% url 'user-post-list' author.username %}">{{ author.username }}</a> - {{ author.post_set.count }} posts{% if author.profile.last_login != None %}, last login {{ author.profile.last_login }} {% endif %}
-            <br/>
+            <a class="mr-2" href="{% url 'tagged-posts' tag.id %}">{{ tag.name }}</a> ({{ tag.taggit_taggeditem_items.count }} articles)
 		</div> 
-       {% endif %} 
     {% endfor %}
-    <br/>
-    {% for author in authors %}
-            {% if author.is_active == False %}
+    {% if user.is_authenticated %}
+    <br>
+    <p>Private tags for {{ user.username }} need to fix count numbers as this includes all tags</p>
+    {% for tag in private_tags %}
     	<div class="list_indent">
-            <a class="mr-2" href="{% url 'user-post-list' author.username %}">{{ author.username }} (inactive)</a>
+            <a class="mr-2" href="{% url 'tagged-privateposts' tag.id %}">{{ tag.name }}</a> ({{ tag.taggit_taggeditem_items.count }} articles)
 		</div> 
-            {% endif %}
     {% endfor %}
+    {% endif %}
 	{% if is_paginated %}
         {% if page_obj.has_previous %}
 	        <a class="btn btn-outline-info mb-4" href="?page=1">first</a>
@@ -37,3 +35,4 @@
 	{% endif %}
     <br/>
 {% endblock content %}
+

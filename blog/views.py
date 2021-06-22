@@ -25,6 +25,18 @@ class AuthorListView(ListView):
         context = super().get_context_data(**kwargs)
         return context
 
+class TagListView(ListView):
+    model = Tag
+    template_name = 'blog/tag_list.html'
+    paginate_by = 50
+    context_object_name = 'tags'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['public_tags'] = Post.tags.all()
+        context['private_tags'] = PrivatePost.tags.all()
+        return context
+
 class PostListView(ListView):
     model = Post
     template_name = 'blog/home.html' # <app>/<model>_<viewtype>.html
@@ -65,6 +77,7 @@ class PostCompactListView(PostListView):
         context = super().get_context_data(**kwargs)
         context['common_tags'] = Post.tags.most_common()[:15]
         context['total_num'] = Post.objects.count() 
+        context['level'] = Post.level
         return context
 
 class PrivatePostCompactListView(PrivatePostListView):
@@ -78,6 +91,7 @@ class PrivatePostCompactListView(PrivatePostListView):
         context = super().get_context_data(**kwargs)
         context['common_tags'] = PrivatePost.tags.most_common()[:15]
         context['total_num'] = PrivatePost.objects.count() 
+        context['level'] = PrivatePost.level
         return context
 
 class PostCompact_UserListView(PostCompactListView):
@@ -137,6 +151,7 @@ class UserPostListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['common_tags'] = Post.tags.most_common()[:5]
+        context['level'] = Post.level
         return context
 
 class UserPrivatePostListView(ListView):
@@ -152,15 +167,26 @@ class UserPrivatePostListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['common_tags'] = PrivatePost.tags.most_common()[:5]
+        context['level'] = PrivatePost.level
         return context
 
 class PostDetailView(DetailView):
     model = Post
     template_name = 'blog/post_detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['level'] = Post.level
+        return context
+
 class PrivatePostDetailView(DetailView):
     model = PrivatePost
     template_name = 'blog/post_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['level'] = PrivatePost.level
+        return context
 
 class TaggedPostListView(ListView):
     model = Post
@@ -176,6 +202,7 @@ class TaggedPostListView(ListView):
         context = super().get_context_data(**kwargs)
         context['common_tags'] = Post.tags.most_common()[:5]
         context['current_tag'] = get_object_or_404(Tag, id = self.kwargs.get('pk')) 
+        context['level'] = Post.level
         return context
 
 class TaggedPrivatePostListView(ListView):
@@ -192,6 +219,7 @@ class TaggedPrivatePostListView(ListView):
         context = super().get_context_data(**kwargs)
         context['common_tags'] = PrivatePost.tags.most_common()[:5]
         context['current_tag'] = get_object_or_404(Tag, id = self.kwargs.get('pk')) 
+        context['level'] = PrivatePost.level
         return context
 
 class PostCreateView(LoginRequiredMixin, CreateView):

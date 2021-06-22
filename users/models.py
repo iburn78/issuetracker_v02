@@ -18,3 +18,5 @@ class Profile(models.Model):
             img.thumbnail(output_size)
             img.save(self.image.path)
             
+    def last_login(self):
+        return self.user.last_login.strftime("%Y-%m-%d, %H:%M:%S")

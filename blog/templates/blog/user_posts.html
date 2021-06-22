@@ -1,6 +1,7 @@
 {% extends "blog/base.html" %}
 {% block content %}
-{% if post.level == "private" %}
+{% if level == "private" %}
+	<div class="alert alert-primary" role="alert">private articles for {{ user }} </div>
 	<h4 class="mb-3">Posts by <b> {{ view.kwargs.username }} </b> ({{ page_obj.paginator.count }})</h4>
 	{% for post in posts %}
         <article>
@@ -27,8 +28,8 @@
         </article>
 		<p align = 'right'><small class="text-muted">-- issuetracker post</small></p>
 	{% endfor %}
-	<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'privatepost-compact-list' %}">List</a>
-	<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'post-private' %}">Posts</a><br/><br/>
+	<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'privatepost-compact-list' %}">list</a>
+	<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'post-private' %}">private</a><br/><br/>
 
 {% else %}
 	<h4 class="mb-3">Posts by <b> {{ view.kwargs.username }} </b> ({{ page_obj.paginator.count }})</h4>
@@ -57,14 +58,14 @@
         </article>
 		<p align = 'right'><small class="text-muted">-- issuetracker post</small></p>
 	{% endfor %}
-	<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'post-compact-list' %}">List</a>
-	<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'blog-home' %}">Posts</a><br/><br/>
+	<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'post-compact-list' %}">list</a>
+	<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'blog-home' %}">post</a><br/><br/>
 
 {% endif %}
 	{% if is_paginated %}
         {% if page_obj.has_previous %}
-	        <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
-		 	<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+	        <a class="btn btn-outline-info mb-4" href="?page=1">first</a>
+		 	<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">prev</a>
 	    {% endif %}
 
 	    {% for num in page_obj.paginator.page_range %}
@@ -76,8 +77,8 @@
 	    {% endfor %}
 
         {% if page_obj.has_next %}
-	        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
-		 	<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+	        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">next</a>
+		 	<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">last</a>
 	    {% endif %}
 	{% endif %}
 {% endblock content %}
