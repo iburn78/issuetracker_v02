@@ -49,7 +49,7 @@
 	    {% if level == "private" %}
 <a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'post-private' %}">private post</a>
         {% else %}
-<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'blog-home' %}">public post</a>
+<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'blog-home' %}">post</a>
 	    {% endif %}
 	{% if is_paginated %}
         {% if page_obj.has_previous %}

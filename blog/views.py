@@ -14,6 +14,11 @@ from taggit.models import Tag
 from django.views.generic.edit import FormView
 from blog.forms import PostSearchForm, PrivatePostSearchForm
 from django.db.models import Q
+from django.template.defaulttags import register
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)
 
 class AuthorListView(ListView):
     model = User
@@ -33,8 +38,21 @@ class TagListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['public_tags'] = Post.tags.all()
-        context['private_tags'] = PrivatePost.tags.all()
+
+        public_tags = Post.tags.all()
+        context['public_tags'] = public_tags
+        public_tag_articles = {}
+        for tag in public_tags:
+            public_tag_articles[tag.name] = Post.objects.filter(tags=tag.id).count()
+        context['public_tag_article_count'] = public_tag_articles
+
+        private_tags = PrivatePost.tags.all()
+        context['private_tags'] = private_tags
+        private_tag_articles = {}
+        for tag in private_tags:
+            private_tag_articles[tag.name] = PrivatePost.objects.filter(tags=tag.id).count()
+        context['private_tag_article_count'] = private_tag_articles
+
         return context
 
 class PostListView(ListView):

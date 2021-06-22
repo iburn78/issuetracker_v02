@@ -57,7 +57,3 @@ urlpatterns = [
     path('search/', SearchFormView.as_view(), name='search-form'),
     path('search/private/', PrivateSearchFormView.as_view(), name='privatesearch-form'),
 ] 
-
-
-
-

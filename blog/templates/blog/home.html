@@ -57,13 +57,13 @@
 
 			</div>
 			<p class="article-content mt-2 mb-1">{{ post.content | safe }}</p>
-			<p align = 'right'><small class="text-muted">-- issuetracker post ({{post.level}})</small></p>
+			<p align = 'right'><small class="text-muted">-- issuetracker post</small></p>
 		</article>
 	{% endfor %}
 	    {% if level == "private" %}
 <a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'privatepost-compact-list' %}">private list</a>
         {% else %}
-<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'post-compact-list' %}">public list</a>
+<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'post-compact-list' %}">list</a>
 	    {% endif %}
 	{% if is_paginated %}
         {% if page_obj.has_previous %}

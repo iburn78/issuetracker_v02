@@ -2,7 +2,7 @@
 {% block content %}
 {% if level == "private" %}
 	<div class="alert alert-primary" role="alert">private articles for {{ user }} </div>
-	<h4 class="mb-3">Posts with tag: <b> {{ current_tag }} </b> ({{ page_obj.paginator.count }})</h4>
+	<h4 class="mb-3">posts with tag: <b> {{ current_tag }} </b> ({{ page_obj.paginator.count }})</h4>
 	{% for post in tagged_posts %}
         <article>
 	        <div class="border-top border-warning"></div>
@@ -28,12 +28,12 @@
         </article>
 		<p align = 'right'><small class="text-muted">-- issuetracker post</small></p>
 	{% endfor %}
-	<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'privatepost-compact-list' %}">List</a>
-	<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'post-private' %}">Posts</a><br/><br/>
+	<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'privatepost-compact-list' %}">list</a>
+	<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'post-private' %}">post</a><br/><br/>
 
 {% else %}
 
-	<h4 class="mb-3">Posts with tag: <b> {{ current_tag }} </b> ({{ page_obj.paginator.count }})</h4>
+	<h4 class="mb-3">posts with tag: <b> {{ current_tag }} </b> ({{ page_obj.paginator.count }})</h4>
 	{% for post in tagged_posts %}
         <article>
 	        <div class="border-top border-warning"></div>
@@ -59,8 +59,8 @@
         </article>
 		<p align = 'right'><small class="text-muted">-- issuetracker post</small></p>
 	{% endfor %}
-	<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'post-compact-list' %}">List</a>
-	<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'blog-home' %}">Posts</a><br/><br/>
+	<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'post-compact-list' %}">list</a>
+	<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'blog-home' %}">post</a><br/><br/>
 
 {% endif %}
 	{% if is_paginated %}

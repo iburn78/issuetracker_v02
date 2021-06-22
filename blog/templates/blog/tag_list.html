@@ -2,15 +2,15 @@
 {% block content %}
     {% for tag in public_tags %}
     	<div class="list_indent">
-            <a class="mr-2" href="{% url 'tagged-posts' tag.id %}">{{ tag.name }}</a> ({{ tag.taggit_taggeditem_items.count }} articles)
+            <a class="mr-2" href="{% url 'tagged-posts' tag.id %}">{{ tag.name }}</a> ({{ public_tag_article_count|get_item:tag.name }} articles)
 		</div> 
     {% endfor %}
     {% if user.is_authenticated %}
     <br>
-    <p>Private tags for {{ user.username }} need to fix count numbers as this includes all tags</p>
+    <p>Private tags for {{ user.username }}</p>
     {% for tag in private_tags %}
     	<div class="list_indent">
-            <a class="mr-2" href="{% url 'tagged-privateposts' tag.id %}">{{ tag.name }}</a> ({{ tag.taggit_taggeditem_items.count }} articles)
+            <a class="mr-2" href="{% url 'tagged-privateposts' tag.id %}">{{ tag.name }}</a> ({{ private_tag_article_count|get_item:tag.name }} articles)
 		</div> 
     {% endfor %}
     {% endif %}
