@@ -8,7 +8,7 @@
   <div class="media-body">
     <div class="article-metadata">
       <img class="rounded article-img mt-1 mb-0" src="{{ object.author.profile.image.url }}">
-	    {% if post.level == "private" %}
+	    {% if level == "private" %}
       <a class="mr-2" href="{% url 'user-privateposts' object.author.username %}">{{ object.author }}</a>
         {% else %}
       <a class="mr-2" href="{% url 'user-posts' object.author.username %}">{{ object.author }}</a>
@@ -33,8 +33,8 @@
       <img class="w-100 h-100 img-fluid" src="{{ object.image.url }}" alt = "Image for this post"> 
 		</div>
   {% endif %}
-	<div style="display:flex">
-	    {% if post.level == "private" %}
+	<div align="right" class="col">
+	    {% if level == "private" %}
     {% for tag in object.tags.all %}
       <a href="{% url 'tagged-privateposts' tag.id %}" class="badge badge-info mt-1" >#{{ tag }}</a>
     {% endfor %}

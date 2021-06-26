@@ -1,19 +1,20 @@
 {% extends "blog/base.html" %}
 {% block content %}
-    {% for tag in public_tags %}
+    {% if 'level' == 'private' %}
+    <p>private tags</p>
+    {% for tag in tags %}
     	<div class="list_indent">
-            <a class="mr-2" href="{% url 'tagged-posts' tag.id %}">{{ tag.name }}</a> ({{ public_tag_article_count|get_item:tag.name }} articles)
+            <a class="mr-2" href="{% url 'tagged-privateposts' tag.id %}">{{ tag.name }}</a> - {{ article_count|get_item:tag.name }} articles {{ author_count|get_item:tag.name }} authors
 		</div> 
     {% endfor %}
-    {% if user.is_authenticated %}
-    <br>
-    <p>Private tags for {{ user.username }}</p>
-    {% for tag in private_tags %}
+    {% else %}
+    {% for tag in tags %} 
     	<div class="list_indent">
-            <a class="mr-2" href="{% url 'tagged-privateposts' tag.id %}">{{ tag.name }}</a> ({{ private_tag_article_count|get_item:tag.name }} articles)
+            <a class="mr-2" href="{% url 'tagged-posts' tag.id %}">{{ tag.name }}</a> - {{ article_count|get_item:tag.name }} articles {{ author_count|get_item:tag.name }} authors
 		</div> 
     {% endfor %}
     {% endif %}
+    <br>
 	{% if is_paginated %}
         {% if page_obj.has_previous %}
 	        <a class="btn btn-outline-info mb-4" href="?page=1">first</a>

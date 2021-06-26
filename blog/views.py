@@ -33,27 +33,48 @@ class AuthorListView(ListView):
 class TagListView(ListView):
     model = Tag
     template_name = 'blog/tag_list.html'
-    paginate_by = 50
+    paginate_by = 70
     context_object_name = 'tags'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        public_tags = Post.tags.all()
-        context['public_tags'] = public_tags
-        public_tag_articles = {}
-        for tag in public_tags:
-            public_tag_articles[tag.name] = Post.objects.filter(tags=tag.id).count()
-        context['public_tag_article_count'] = public_tag_articles
-
-        private_tags = PrivatePost.tags.all()
-        context['private_tags'] = private_tags
-        private_tag_articles = {}
-        for tag in private_tags:
-            private_tag_articles[tag.name] = PrivatePost.objects.filter(tags=tag.id).count()
-        context['private_tag_article_count'] = private_tag_articles
+        tag_articles = {}
+        tag_authors = {}
+        for tag in Post.tags.order_by('name'):
+            tag_articles[tag.name] = Post.objects.filter(tags=tag.id).count()
+            tag_authors[tag.name] = User.objects.filter(post__tags=tag.id).distinct().count()
+        context['article_count'] = tag_articles
+        context['author_count'] = tag_authors
+        context['level'] = Post.level
 
         return context
+    
+    def get_queryset(self): 
+        return Post.tags.order_by('name')
+
+class PrivateTagListView(ListView):
+    model = Tag
+    template_name = 'blog/tag_list.html'
+    paginate_by = 70
+    context_object_name = 'tags'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        tag_articles = {}
+        tag_authors = {}
+        for tag in PrivatePost.tags.order_by('name'):
+            tag_articles[tag.name] = PrivatePost.objects.filter(tags=tag.id).count()
+            tag_authors[tag.name] = User.objects.filter(privatepost__tags=tag.id).distinct().count()
+        context['article_count'] = tag_articles
+        context['author_count'] = tag_authors
+        context['level'] = PrivatePost.level
+
+        return context
+    
+    def get_queryset(self): 
+        return PrivatePost.tags.order_by('name')
 
 class PostListView(ListView):
     model = Post
@@ -252,6 +273,11 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         form.save_m2m()
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['level'] = Post.level
+        return context
+
 class PrivatePostCreateView(LoginRequiredMixin, CreateView):
     model = PrivatePost
     template_name = 'blog/post_form.html'
@@ -264,6 +290,11 @@ class PrivatePostCreateView(LoginRequiredMixin, CreateView):
         form.save_m2m()
         return super().form_valid(form)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['level'] = PrivatePost.level
+        return context
+        
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     fields = ['title', 'image', 'content', 'tags']
@@ -281,6 +312,11 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         if self.request.user == post.author:
             return True
         return False
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['level'] = Post.level
+        return context
 
 class PrivatePostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = PrivatePost
@@ -300,6 +336,11 @@ class PrivatePostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView)
             return True
         return False
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['level'] = PrivatePost.level
+        return context
+
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
     success_url = '/'
@@ -311,6 +352,11 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             return True
         return False
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['level'] = Post.level
+        return context
+
 class PrivatePostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = PrivatePost
     success_url = '/private/'
@@ -321,6 +367,11 @@ class PrivatePostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView)
         if self.request.user == post.author:
             return True
         return False
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['level'] = PrivatePost.level
+        return context
 
 def about(request):
     return render(request, 'blog/about.html')
@@ -339,6 +390,11 @@ class SearchFormView(FormView):
         context['search_result_list'] = Post.objects.filter(Q(title__icontains=search_term) | Q(content__icontains=search_term) ).distinct().order_by('-date_posted') 
         return  render(self.request, self.template_name, context)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['level'] = Post.level
+        return context
+
 class PrivateSearchFormView(FormView):
     form_class = PrivatePostSearchForm
     template_name = 'blog/search_form.html'
@@ -349,3 +405,8 @@ class PrivateSearchFormView(FormView):
         context['search_term'] = search_term
         context['search_result_list'] = PrivatePost.objects.filter(Q(title__icontains=search_term) | Q(content__icontains=search_term) ).distinct().order_by('-date_posted') 
         return  render(self.request, self.template_name, context)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['level'] = PrivatePost.level
+        return context
