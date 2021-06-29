@@ -4,13 +4,13 @@
     <p>private tags</p>
     {% for tag in tags %}
     	<div class="list_indent">
-            <a class="mr-2" href="{% url 'tagged-privateposts' tag.id %}">{{ tag.name }}</a> - {{ article_count|get_item:tag.name }} articles {{ author_count|get_item:tag.name }} authors
+            <a class="mr-2" href="{% url 'tagged-privateposts' tag.id user %}">{{ tag.name }}</a> - {{ article_count|get_item:tag.name }} articles {{ author_count|get_item:tag.name }} authors
 		</div> 
     {% endfor %}
     {% else %}
     {% for tag in tags %} 
     	<div class="list_indent">
-            <a class="mr-2" href="{% url 'tagged-posts' tag.id %}">{{ tag.name }}</a> - {{ article_count|get_item:tag.name }} articles {{ author_count|get_item:tag.name }} authors
+            <a class="mr-2" href="{% url 'tagged-posts' tag.id %}">{{ tag.name }}</a> - {{ article_count|get_item:tag.name }} articles 
 		</div> 
     {% endfor %}
     {% endif %}

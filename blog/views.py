@@ -61,20 +61,18 @@ class PrivateTagListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
         tag_articles = {}
-        tag_authors = {}
         for tag in PrivatePost.tags.order_by('name'):
-            tag_articles[tag.name] = PrivatePost.objects.filter(tags=tag.id).count()
-            tag_authors[tag.name] = User.objects.filter(privatepost__tags=tag.id).distinct().count()
+            tag_articles[tag.name] = PrivatePost.objects.filter(tags=tag.id, author=user).count()
         context['article_count'] = tag_articles
-        context['author_count'] = tag_authors
         context['level'] = PrivatePost.level
 
         return context
     
     def get_queryset(self): 
-        return PrivatePost.tags.order_by('name')
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        return PrivatePost.tags.filter(privatepost__author=user).order_by('name')
 
 class PostListView(ListView):
     model = Post
@@ -99,11 +97,24 @@ class PrivatePostListView(ListView):
     ordering = ['-date_posted']
     paginate_by = 7 
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, common_tag_number=5, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['common_tags'] = PrivatePost.tags.most_common()[:5]
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        tag_articles = {}
+        for tag in PrivatePost.tags.filter(privatepost__author=user).order_by('name'):
+            tag_articles[tag.name] = PrivatePost.objects.filter(tags=tag.id, author=user).count()
+        common_tag_dict = sorted(tag_articles.items(), key=lambda x:x[1], reverse=True)
+        common_tags = []
+        for c in common_tag_dict:
+            common_tags.append(PrivatePost.tags.filter(name=c[0]).get())
+        context['common_tags'] = common_tags[:common_tag_number]
         context['level'] = PrivatePost.level
+        context['total_num'] = PrivatePost.objects.filter(author=user).count() 
         return context
+
+    def get_queryset(self): 
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        return PrivatePost.objects.filter(author=user)
 
 class PostCompactListView(PostListView):
     model = Post
@@ -120,17 +131,10 @@ class PostCompactListView(PostListView):
         return context
 
 class PrivatePostCompactListView(PrivatePostListView):
-    model = PrivatePost
-    context_object_name = 'posts'
     template_name = 'blog/post_compact_list.html'
-    ordering = ['-date_posted']
     paginate_by = 50
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['common_tags'] = PrivatePost.tags.most_common()[:15]
-        context['total_num'] = PrivatePost.objects.count() 
-        context['level'] = PrivatePost.level
+    def get_context_data(self, common_tag_number=15, **kwargs):
+        context = super().get_context_data(common_tag_number, **kwargs)
         return context
 
 class PostCompact_UserListView(PostCompactListView):
@@ -142,17 +146,6 @@ class PostCompact_UserListView(PostCompactListView):
         context = super().get_context_data(**kwargs)
         user = get_object_or_404(User, username=self.kwargs.get('username'))
         context['total_num'] = Post.objects.filter(author=user).order_by('-date_posted').count()
-        return context
-        
-class PrivatePostCompact_UserListView(PrivatePostCompactListView):
-    def get_queryset(self): 
-        user = get_object_or_404(User, username=self.kwargs.get('username'))
-        return PrivatePost.objects.filter(author=user).order_by('-date_posted')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = get_object_or_404(User, username=self.kwargs.get('username'))
-        context['total_num'] = PrivatePost.objects.filter(author=user).order_by('-date_posted').count()
         return context
         
 class PostCompact_TagListView(PostCompactListView):
@@ -168,8 +161,9 @@ class PostCompact_TagListView(PostCompactListView):
 
 class PrivatePostCompact_TagListView(PrivatePostCompactListView):
     def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
         tag = get_object_or_404(Tag, id = self.kwargs.get('pk')) 
-        return PrivatePost.objects.filter(tags=tag).order_by('-date_posted')
+        return PrivatePost.objects.filter(tags=tag, author=user).order_by('-date_posted')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -191,22 +185,6 @@ class UserPostListView(ListView):
         context = super().get_context_data(**kwargs)
         context['common_tags'] = Post.tags.most_common()[:5]
         context['level'] = Post.level
-        return context
-
-class UserPrivatePostListView(ListView):
-    model = PrivatePost
-    template_name = 'blog/user_posts.html' # <app>/<model>_<viewtype>.html
-    context_object_name = 'posts'
-    paginate_by = 7 
-
-    def get_queryset(self): # overriding a method
-        user = get_object_or_404(User, username=self.kwargs.get('username'))
-        return PrivatePost.objects.filter(author=user).order_by('-date_posted')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['common_tags'] = PrivatePost.tags.most_common()[:5]
-        context['level'] = PrivatePost.level
         return context
 
 class PostDetailView(DetailView):
@@ -244,22 +222,14 @@ class TaggedPostListView(ListView):
         context['level'] = Post.level
         return context
 
-class TaggedPrivatePostListView(ListView):
-    model = PrivatePost
+class TaggedPrivatePostListView(PrivatePostListView):
     template_name = 'blog/tag_posts.html'
     context_object_name = 'tagged_posts'
-    paginate_by = 7
     
     def get_queryset(self): 
         tag = get_object_or_404(Tag, id = self.kwargs.get('pk')) 
-        return PrivatePost.objects.filter(tags=tag).order_by('-date_posted')
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['common_tags'] = PrivatePost.tags.most_common()[:5]
-        context['current_tag'] = get_object_or_404(Tag, id = self.kwargs.get('pk')) 
-        context['level'] = PrivatePost.level
-        return context
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        return PrivatePost.objects.filter(tags=tag, author=user).order_by('-date_posted')
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post

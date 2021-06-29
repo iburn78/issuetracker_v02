@@ -9,7 +9,7 @@
     <div class="article-metadata">
       <img class="rounded article-img mt-1 mb-0" src="{{ object.author.profile.image.url }}">
 	    {% if level == "private" %}
-      <a class="mr-2" href="{% url 'user-privateposts' object.author.username %}">{{ object.author }}</a>
+      <a class="mr-2" href="{% url 'post-private' user %}">{{ object.author }}</a>
         {% else %}
       <a class="mr-2" href="{% url 'user-posts' object.author.username %}">{{ object.author }}</a>
 	    {% endif %}
@@ -36,7 +36,7 @@
 	<div align="right" class="col">
 	    {% if level == "private" %}
     {% for tag in object.tags.all %}
-      <a href="{% url 'tagged-privateposts' tag.id %}" class="badge badge-info mt-1" >#{{ tag }}</a>
+      <a href="{% url 'tagged-privateposts' tag.id user %}" class="badge badge-info mt-1" >#{{ tag }}</a>
     {% endfor %}
         {% else %}
     {% for tag in object.tags.all %}
@@ -48,8 +48,8 @@
 </article>
 <p align = 'right'><small class="text-muted">-- issuetracker post ({{object.level}})</small><p>
 	    {% if level == "private" %}
-<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'privatepost-compact-list' %}">list</a>
-<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'post-private' %}">private</a>
+<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'privatepost-compact-list' user %}">list</a>
+<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'post-private' user %}">private</a>
         {% else %}
 <a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'post-compact-list' %}">list</a>
 <a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'blog-home' %}">post</a>
