@@ -1,18 +1,19 @@
 {% extends "blog/base.html" %}
 {% block content %}
-    {% if 'level' == 'private' %}
-    <p>private tags</p>
-    {% for tag in tags %}
-    	<div class="list_indent">
-            <a class="mr-2" href="{% url 'tagged-privateposts' tag.id user %}">{{ tag.name }}</a> - {{ article_count|get_item:tag.name }} articles {{ author_count|get_item:tag.name }} authors
-		</div> 
-    {% endfor %}
+    {% if level == 'private' %}
+	<div class="alert alert-primary" role="alert">private tags</div>
+        {% for tag in tags %}
+        	<div class="list_indent">
+                <a class="mr-2" href="{% url 'tag-privatepost-list' tag.id user %}">{{ tag.name }}</a> - {{ article_count|get_item:tag.name }} articles 
+            </div> 
+    		 
+        {% endfor %}
     {% else %}
-    {% for tag in tags %} 
-    	<div class="list_indent">
-            <a class="mr-2" href="{% url 'tagged-posts' tag.id %}">{{ tag.name }}</a> - {{ article_count|get_item:tag.name }} articles 
-		</div> 
-    {% endfor %}
+        {% for tag in tags %} 
+        	<div class="list_indent">
+                <a class="mr-2" href="{% url 'tag-post-list' tag.id %}">{{ tag.name }}</a> - {{ article_count|get_item:tag.name }} articles {{ author_count|get_item:tag.name }} authors 
+    		</div> 
+        {% endfor %}
     {% endif %}
     <br>
 	{% if is_paginated %}

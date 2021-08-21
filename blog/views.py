@@ -63,7 +63,7 @@ class PrivateTagListView(ListView):
         context = super().get_context_data(**kwargs)
         user = get_object_or_404(User, username=self.kwargs.get('username'))
         tag_articles = {}
-        for tag in PrivatePost.tags.order_by('name'):
+        for tag in PrivatePost.tags.filter(privatepost__author=user).order_by('name'):
             tag_articles[tag.name] = PrivatePost.objects.filter(tags=tag.id, author=user).count()
         context['article_count'] = tag_articles
         context['level'] = PrivatePost.level
