@@ -352,6 +352,9 @@ def dashboard_view(request):
 def milo(request):
     return render(request, 'blog/milo_test.html')
 
+def milo_twocol(request):
+    return render(request, 'blog/home-twocolumn.html')
+
 class SearchFormView(FormView):
     form_class = PostSearchForm
     template_name = 'blog/search_form.html'

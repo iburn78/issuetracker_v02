@@ -30,6 +30,7 @@ from blog import views
 
 urlpatterns = [
     path('milo/', views.milo, name='milo-test'), 
+    path('milo_twocol/', views.milo_twocol, name='milo-twocol'), 
 
     path('', PostListView.as_view(), name='blog-home'), 
     path('authors/', AuthorListView.as_view(), name='author-list'), 
