@@ -349,6 +349,9 @@ def about(request):
 def dashboard_view(request):
     return render(request, 'blog/web_stats.html')
 
+def milo(request):
+    return render(request, 'blog/index.html')
+
 class SearchFormView(FormView):
     form_class = PostSearchForm
     template_name = 'blog/search_form.html'

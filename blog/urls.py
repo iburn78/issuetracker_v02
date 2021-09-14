@@ -29,6 +29,8 @@ from blog.views import (
 from blog import views
 
 urlpatterns = [
+    path('milo/', views.milo, name='milo-temp'), 
+
     path('', PostListView.as_view(), name='blog-home'), 
     path('authors/', AuthorListView.as_view(), name='author-list'), 
     path('tags/', TagListView.as_view(), name='tag-list'), 
