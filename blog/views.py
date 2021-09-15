@@ -12,7 +12,7 @@ from django.http import HttpResponse
 from blog.models import Post, PrivatePost
 from taggit.models import Tag
 from django.views.generic.edit import FormView
-from blog.forms import PostSearchForm, PrivatePostSearchForm
+from blog.forms import MiloSearchForm, PostSearchForm, PrivatePostSearchForm
 from django.db.models import Q
 from django.template.defaulttags import register
 
@@ -350,11 +350,29 @@ def dashboard_view(request):
     return render(request, 'blog/web_stats.html')
 
 
+
+
+
+
+
 def milo(request):
-    return render(request, 'blog/milo_test.html')
+    if request.method == "POST":
+        form = MiloSearchForm(request.POST)
+        if form.is_valid():
+            key_word = form.cleaned_data
+        else:
+            key_word = "form is not valid"
+    else: 
+        key_word = "form is not submited (or not POST)"
+    return render(request, 'blog/milo_test.html', {'milo_key_word':key_word})
 
 def milo_twocol(request):
     return render(request, 'blog/home-twocolumn.html')
+
+
+
+
+
 
 
 class SearchFormView(FormView):
