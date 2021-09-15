@@ -361,7 +361,7 @@ def milo(request):
         if form.is_valid():
             key_word = form.cleaned_data
         else:
-            key_word = form.cleaned_data+"fmrm is not valid"
+            key_word = request.POST
     else: 
         key_word = "form is not submited (or not POST)"
     return render(request, 'blog/milo_test.html', {'milo_key_word':key_word})
