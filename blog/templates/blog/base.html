@@ -14,7 +14,7 @@
       <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
       <link rel="stylesheet" href="{% static 'blog/tagsinput.css' %}" />
       <link rel="stylesheet" href="{% static 'blog/issuetracker_style.css' %}" />
-      <link href="{% static 'css/app.css' %}" rel="stylesheet">
+      <!-- link href="{% static 'css/app.css' %}" rel="stylesheet" -->
 
     	<!-- Website title and logo -->
 		  <title>IssueTracker</title>
@@ -24,7 +24,7 @@
     </head>
     <body>
         <header class="site-header">
-          <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top"> 
+          <nav class="navbar navbar-expand-md navbar-dark bg-steel absolute-top"> 
             <div class="container">
 				      <a class="navbar-brand mr-4" href="{% url 'blog-home' %}">IssueTracker<small><i>(beta)</i></small></a>
               <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
