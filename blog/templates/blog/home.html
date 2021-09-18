@@ -3,8 +3,8 @@
     {% if level == "private" %}
 	<div class="alert alert-primary" role="alert">private articles for {{ user }} </div>
 	{% endif %}
-    {% if common_tags.count != 0 %}
-	popular tags: 
+    {% if tag_count != 0 %}
+    popular: 
     {% endif %}
     {% for mt in common_tags %}
 	    {% if level == "private" %}
@@ -14,7 +14,7 @@
 	    {% endif %}
 	{% endfor %}
     {% if posts.count == 0 %}
-    <p>There is no post yet... </p>
+    <p>no post yet...</p>
     {% endif %}
     <br>
 	{% for post in posts %}

@@ -15,6 +15,7 @@ from django.views.generic.edit import FormView
 from blog.forms import MiloSearchForm, PostSearchForm, PrivatePostSearchForm
 from django.db.models import Q
 from django.template.defaulttags import register
+from django.urls import reverse
 
 @register.filter
 def get_item(dictionary, key):
@@ -84,6 +85,7 @@ class PostListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['common_tags'] = Post.tags.most_common()[:5]
+        context['tag_count'] = Post.tags.most_common()[:5].count()
         context['level'] = Post.level
         return context
 
@@ -108,6 +110,9 @@ class PrivatePostListView(ListView):
         for c in common_tag_dict:
             common_tags.append(PrivatePost.tags.filter(name=c[0]).get())
         context['common_tags'] = common_tags[:common_tag_number]
+        context['tag_count'] = len(common_tags)
+        # Note that common_tags is not a QuerySet, but a list, and a list does not have the same count() method in python (it requires an arg)
+        # django html template is only able to execute function without arguments, so {{ <QuerySet>.count }} is working while {{ <list>.count }} is not
         context['level'] = PrivatePost.level
         context['total_num'] = PrivatePost.objects.filter(author=user).count() 
         return context
@@ -329,7 +334,9 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 class PrivatePostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = PrivatePost
-    success_url = '/private/'
+    success_url = '/'   # this has to be /private/username ###################################################
+                        # figure out later how to get username...
+                        # or properly use reverse function
     template_name = 'blog/post_confirm_delete.html'
     
     def test_func(self):
@@ -351,10 +358,6 @@ def dashboard_view(request):
 
 
 
-
-
-
-
 def milo(request):
     if request.method == "POST":
         form = MiloSearchForm(request.POST)
@@ -368,10 +371,6 @@ def milo(request):
 
 def milo_twocol(request):
     return render(request, 'blog/home-twocolumn.html')
-
-
-
-
 
 
 
