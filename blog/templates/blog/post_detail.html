@@ -1,64 +1,66 @@
 {% extends "blog/base.html" %}
 {% block content %}
     {% if level == 'private' %}
-	<div class="alert alert-primary" role="alert">private articles for {{ user }} </div>
+	    <div class="alert alert-primary" role="alert">private articles for {{ user }} </div>
     {% endif %}
 <article>  <!-- class="media content-section"> -->
 	<div class="border-top border-warning"></div>
   <div class="media-body">
     <div class="article-metadata">
       <img class="rounded article-img mt-1 mb-0" src="{{ object.author.profile.image.url }}">
-	    {% if level == "private" %}
-      <a class="mr-2" href="{% url 'post-private' user %}">{{ object.author }}</a>
-        {% else %}
-      <a class="mr-2" href="{% url 'user-posts' object.author.username %}">{{ object.author }}</a>
-	    {% endif %}
+  	  {% if level == "private" %}
+        <a class="mr-2" href="{% url 'post-private' user %}">{{ object.author }}</a>
+      {% else %}
+        <a class="mr-2" href="{% url 'user-posts' object.author.username %}">{{ object.author }}</a>
+  	  {% endif %}
       <small class="text-muted">{{ object.date_posted|date:"M d, Y" }}</small>
-	    {% if object.level == "private" %}
-	        {% if object.author == user %}
-                <a class="btn btn-danger btn-sm mt-1 mb-1 float-right" href="{% url 'privatepost-delete' object.id %}">Del</a>
-                <a class="btn btn-secondary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'privatepost-update' object.id %}">Update</a>
-	        {% endif %}
-        {% else %}
-	        {% if object.author == user %}
-                <a class="btn btn-danger btn-sm mt-1 mb-1 float-right" href="{% url 'post-delete' object.id %}">Del</a>
-                <a class="btn btn-secondary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'post-update' object.id %}">Update</a>
-	        {% endif %}
-	    {% endif %}
+  	  {% if object.level == "private" %}
+  	    {% if object.author == user %}
+          <a class="btn btn-danger btn-sm mt-1 mb-1 float-right" href="{% url 'privatepost-delete' object.id %}">Del</a>
+          <a class="btn btn-secondary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'privatepost-update' object.id %}">Update</a>
+  	    {% endif %}
+      {% else %}
+  	    {% if object.author == user %}
+          <a class="btn btn-danger btn-sm mt-1 mb-1 float-right" href="{% url 'post-delete' object.id %}">Del</a>
+          <a class="btn btn-secondary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'post-update' object.id %}">Update</a>
+  	    {% endif %}
+  	  {% endif %}
     </div>
   </div>
   <h4 class="article-title mt-2 mb-2">{{ object.title }}</h4>
   {% if object.image %}
 		<div class="row">
-      <img class="w-100 h-100 img-fluid" src="{{ object.image.url }}" alt = "Image for this post"> 
+      <img class="w-100 h-100 img-fluid" src="{{ object.image.url }}" alt = "issuetracker post image"> 
 		</div>
   {% endif %}
 	<div align="right" class="col">
-	    {% if level == "private" %}
-    {% for tag in object.tags.all %}
-      <a href="{% url 'tagged-privateposts' tag.id user %}" class="badge badge-info mt-1" >#{{ tag }}</a>
-    {% endfor %}
-        {% else %}
-    {% for tag in object.tags.all %}
-      <a href="{% url 'tagged-posts' tag.id %}" class="badge badge-info mt-1" >#{{ tag }}</a>
-    {% endfor %}
-	    {% endif %}
+	  {% if level == "private" %}
+      {% for tag in object.tags.all %}
+        <a href="{% url 'tagged-privateposts' tag.id user %}" class="badge badge-info mt-1" >#{{ tag }}</a>
+      {% endfor %}
+    {% else %}
+      {% for tag in object.tags.all %}
+        <a href="{% url 'tagged-posts' tag.id %}" class="badge badge-info mt-1" >#{{ tag }}</a>
+      {% endfor %}
+	  {% endif %}
 	</div>
   <p class="article-content mt-2 mb-1">{{ object.content | safe }}</p>
 </article>
 <p align = 'right'><small class="text-muted">-- issuetracker post ({{object.level}})</small><p>
-	    {% if level == "private" %}
-<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'privatepost-compact-list' user %}">list</a>
-<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'post-private' user %}">private</a>
-        {% else %}
-<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'post-compact-list' %}">list</a>
-<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'blog-home' %}">post</a>
-	    {% endif %}
+{% if level == "private" %}
+   <a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'privatepost-compact-list' user %}">list</a>
+   <a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'post-private' user %}">private</a>
+{% else %}
+   <a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'post-compact-list' %}">list</a>
+   <a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'blog-home' %}">post</a>
+{% endif %}
 <br/>
 <br/>
-<!-- begin wwww.htmlcommentbox.com -->
- <div id="HCB_comment_box"><a href="http://www.htmlcommentbox.com">Comment Box</a> is loading comments...</div>
- <link rel="stylesheet" type="text/css" href="https://www.htmlcommentbox.com/static/skins/bootstrap/twitter-bootstrap.css?v=0" />
- <script type="text/javascript" id="hcb"> /*<!--*/ if(!window.hcb_user){hcb_user={};} (function(){var s=document.createElement("script"), l=hcb_user.PAGE || (""+window.location).replace(/'/g,"%27"), h="https://www.htmlcommentbox.com";s.setAttribute("type","text/javascript");s.setAttribute("src", h+"/jread?page="+encodeURIComponent(l).replace("+","%2B")+"&mod=%241%24wq1rdBcg%24mBCtLfsXd543C.a2zC13N."+"&opts=16862&num=10&ts=1579140428139");if (typeof s!="undefined") document.getElementsByTagName("head")[0].appendChild(s);})(); /*-->*/ </script>
-<!-- end www.htmlcommentbox.com -->
+{% if level != "private" %}
+  <!-- begin wwww.htmlcommentbox.com -->
+  <div id="HCB_comment_box"><a href="http://www.htmlcommentbox.com">Comment Box</a> is loading comments...</div>
+  <link rel="stylesheet" type="text/css" href="https://www.htmlcommentbox.com/static/skins/bootstrap/twitter-bootstrap.css?v=0" />
+  <script type="text/javascript" id="hcb"> /*<!--*/ if(!window.hcb_user){hcb_user={};} (function(){var s=document.createElement("script"), l=hcb_user.PAGE || (""+window.location).replace(/'/g,"%27"), h="https://www.htmlcommentbox.com";s.setAttribute("type","text/javascript");s.setAttribute("src", h+"/jread?page="+encodeURIComponent(l).replace("+","%2B")+"&mod=%241%24wq1rdBcg%24mBCtLfsXd543C.a2zC13N."+"&opts=16862&num=10&ts=1579140428139");if (typeof s!="undefined") document.getElementsByTagName("head")[0].appendChild(s);})(); /*-->*/ </script>
+  <!-- end www.htmlcommentbox.com -->
+{% endif %}
 {% endblock content %}

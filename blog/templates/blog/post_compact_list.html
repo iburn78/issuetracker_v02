@@ -48,11 +48,11 @@
 	<div class="mt-2 mb-2">post count: <b>{{ total_num }}</b></div>	
     {% endif %}
 	    {% if level == "private" %}
-<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'privatepost-compact-list' user %}">list</a>
-<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'post-private' user %}">private</a>
+			<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'privatepost-compact-list' user %}">list</a>
+			<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'post-private' user %}">private</a>
         {% else %}
-<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'post-compact-list' %}">list</a>
-<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'blog-home' %}">post</a>
+			<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'post-compact-list' %}">list</a>
+			<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'blog-home' %}">post</a>
 	    {% endif %}
 	{% if is_paginated %}
         {% if page_obj.has_previous %}

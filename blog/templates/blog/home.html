@@ -21,56 +21,68 @@
 		<article>   
 			<div class="border-top border-warning"> </div>
 			<div class="border-top border-warning"> </div>
+	    	{% if post.level == "private" %}
 				<div class="article-metadata">
-		 			<img class="rounded article-img mt-1 mb-0" src="{{ post.author.profile.image.url }}">
-
-	            {% if post.level == "private" %}
+					<img class="rounded article-img mt-1 mb-0" src="{{ post.author.profile.image.url }}">
     		        <a class="mr-2" href="{% url 'post-private' user %}">{{ post.author }}</a>
-                {% else %}
-    		        <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
-			    {% endif %}
-
      	      		<small class="text-muted">{{ post.date_posted|date:"M d, Y" }}</small>
-		 		</div>
-                
-			{% if post.level == "private" %}
-			    <h4><a class="article-title mt-2 mb-2" href="{% url 'privatepost-detail' post.id %}">{{ post.title }}</a></h4>
-            {% else %}
-			    <h4><a class="article-title mt-2 mb-2" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h4>
-			{% endif %}
+				</div>
 
-			{% if post.image %}
-			<div class="row">
-				<img class="w-100 h-100 img-fluid" src="{{ post.image.url }}" alt = "image"> 
-			</div>
-			{% endif %}
-			<div style="display:flex">
-
-	        {% if post.level == "private" %}
+			    <a class="article-title mt-2 mb-2" href="{% url 'privatepost-detail' post.id %}">
+					<h4>{{ post.title }}</h4>
+					{% if post.image %}
+						<div class="row">
+							<img class="w-100 h-100 img-fluid" src="{{ post.image.url }}" alt = "image"> 
+						</div>
+					{% endif %}
+				</a>
                 <div align="right" class="col">
-				{% for tag in post.tags.all %}
-					<a href="{% url 'tagged-privateposts' tag.id user %}" class="mr-1 badge badge-info mt-1">#{{ tag }}</a>
-				{% endfor %}
+					{% for tag in post.tags.all %}
+						<a href="{% url 'tagged-privateposts' tag.id user %}" class="mr-1 badge badge-info mt-1">#{{ tag }}</a>
+					{% endfor %}
                 </div>
-            {% else %}
+
+			    <a class="article-title mt-2 mb-2" href="{% url 'privatepost-detail' post.id %}">
+					<p class="article-content mt-2 mb-1">{{ post.content | safe | truncatewords:30 }}</p>
+				</a>
+
+            {% else %} <!-- public -->
+				<div class="article-metadata">
+					<img class="rounded article-img mt-1 mb-0" src="{{ post.author.profile.image.url }}">
+    		        <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
+     	      		<small class="text-muted">{{ post.date_posted|date:"M d, Y" }}</small>
+				</div>
+
+			    <a class="article-title mt-2 mb-2" href="{% url 'post-detail' post.id %}">
+					<h4>{{ post.title }}</h4>
+					{% if post.image %}
+						<div class="row">
+							<img class="w-100 h-100 img-fluid" src="{{ post.image.url }}" alt = "image"> 
+						</div>
+					{% endif %}
+				</a>
                 <div align="right" class="col">
-				{% for tag in post.tags.all %}
-					<a href="{% url 'tagged-posts' tag.id %}" class="mr-1 badge badge-info mt-1">#{{ tag }}</a>
-				{% endfor %}
+					{% for tag in post.tags.all %}
+						<a href="{% url 'tagged-posts' tag.id %}" class="mr-1 badge badge-info mt-1">#{{ tag }}</a>
+					{% endfor %}
                 </div>
+
+			    <a class="article-title mt-2 mb-2" href="{% url 'privatepost-detail' post.id %}">
+					<p class="article-content mt-2 mb-1">{{ post.content | safe | truncatewords:30 }}</p>
+				</a>
+
 			{% endif %}
 
-			</div>
-			<p class="article-content mt-2 mb-1">{{ post.content | safe | truncatewords:30 }}</p>
 			<p align = 'right'><small class="text-muted">-- issuetracker post</small></p>
 		</article>
+
 	{% endfor %}
 	    {% if level == "private" %}
-<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'privatepost-compact-list' user %}">list</a>
-<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'post-private' user %}">private</a>
+			<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'privatepost-compact-list' user %}">list</a>
+			<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'post-private' user %}">private</a>
         {% else %}
-<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'post-compact-list' %}">list</a>
-<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'blog-home' %}">post</a>
+			<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'post-compact-list' %}">list</a>
+			<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'blog-home' %}">post</a>
 	    {% endif %}
 	{% if is_paginated %}
         {% if page_obj.has_previous %}

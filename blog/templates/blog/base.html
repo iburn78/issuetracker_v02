@@ -74,15 +74,15 @@
                   <ul class="list-group">
                     <li class="list-group-item list-group-item-light"><a href="{% url 'blog-about' %}">about IssueTracker</a></li>
                     <li class="list-group-item list-group-item-light"><a href="{% url 'search-form' %}">search post</a></li>
-		       {% if user.is_authenticated %}
+		            {% if user.is_authenticated %}
                     <li class="list-group-item list-group-item-light"><a href="{% url 'privatesearch-form' %}">search private</a></li>
-               {% endif %}
+                {% endif %}
                     <li class="list-group-item list-group-item-light"><a href="{% url 'website-stats' %}">IssueTracker statistics</a></li>
                     <li class="list-group-item list-group-item-light"><a href="{% url 'author-list' %}">author list</a></li>
                     <li class="list-group-item list-group-item-light"><a href="{% url 'tag-list' %}">tag list</a></li>
-		       {% if user.is_authenticated %}
+		            {% if user.is_authenticated %}
                     <li class="list-group-item list-group-item-light"><a href="{% url 'privatetag-list' user %}">private tag list</a></li>
-               {% endif %}
+                {% endif %}
                   </ul>
                 </p>
               </div>
