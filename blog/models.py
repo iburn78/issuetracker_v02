@@ -4,6 +4,7 @@ from django.urls import reverse
 from taggit.managers import TaggableManager
 from tinymce.models import HTMLField
 from django.contrib.auth.models import User 
+from bs4 import BeautifulSoup
 
 class PostRoot(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -12,6 +13,10 @@ class PostRoot(models.Model):
     content = HTMLField()
     image = models.ImageField(upload_to='post_imgs', blank=True)
     tags = TaggableManager(blank = True)
+    
+    def get_preview_text(self):
+        soup = BeautifulSoup(self.content)
+        return soup.find('p').text[:50]
 
     def __str__(self):
         return self.title

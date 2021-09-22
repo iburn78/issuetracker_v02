@@ -16,6 +16,7 @@ from blog.forms import MiloSearchForm, PostSearchForm, PrivatePostSearchForm
 from django.db.models import Q
 from django.template.defaulttags import register
 from django.urls import reverse
+from bs4 import BeautifulSoup
 
 @register.filter
 def get_item(dictionary, key):
@@ -235,6 +236,13 @@ class TaggedPrivatePostListView(PrivatePostListView):
         tag = get_object_or_404(Tag, id = self.kwargs.get('pk')) 
         user = get_object_or_404(User, username=self.kwargs.get('username'))
         return PrivatePost.objects.filter(tags=tag, author=user).order_by('-date_posted')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['common_tags'] = PrivatePost.tags.most_common()[:5]
+        context['current_tag'] = get_object_or_404(Tag, id = self.kwargs.get('pk')) 
+        context['level'] = PrivatePost.level
+        return context
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post

@@ -43,7 +43,7 @@
                 </div>
 
 			    <a class="article-title mt-2 mb-2" href="{% url 'privatepost-detail' post.id %}">
-					<p class="article-content mt-2 mb-1">{{ post.content | safe | truncatewords:30 }}</p>
+					<p class="article-content mt-2 mb-1">{{ post.get_preview_text | safe }}</p>
 				</a>
 
             {% else %} <!-- public -->
@@ -67,16 +67,17 @@
 					{% endfor %}
                 </div>
 
-			    <a class="article-title mt-2 mb-2" href="{% url 'privatepost-detail' post.id %}">
-					<p class="article-content mt-2 mb-1">{{ post.content | safe | truncatewords:30 }}</p>
+				<a class="article-title mt-2 mb-2" href="{% url 'post-detail' post.id %}">
+					<p class="article-content mt-2 mb-1">{{ post.get_preview_text | safe }}</p>
 				</a>
 
 			{% endif %}
 
-			<p align = 'right'><small class="text-muted">-- issuetracker post</small></p>
 		</article>
+		<p align = 'right'><small class="text-muted">-- issuetracker post</small></p>
 
 	{% endfor %}
+
 	    {% if level == "private" %}
 			<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'privatepost-compact-list' user %}">list</a>
 			<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'post-private' user %}">private</a>
