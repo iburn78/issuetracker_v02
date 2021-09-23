@@ -15,7 +15,7 @@ class PostRoot(models.Model):
     tags = TaggableManager(blank = True)
     
     def get_preview_text(self):
-        soup = BeautifulSoup(self.content)
+        soup = BeautifulSoup(self.content, 'html.parser')
         return soup.find('p').text[:50]
 
     def __str__(self):
