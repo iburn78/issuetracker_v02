@@ -55,7 +55,7 @@ class TagListView(ListView):
     def get_queryset(self): 
         return Post.tags.order_by('name')
 
-class PrivateTagListView(ListView):
+class PrivateTagListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Tag
     template_name = 'blog/tag_list.html'
     paginate_by = 70
@@ -76,6 +76,11 @@ class PrivateTagListView(ListView):
         user = get_object_or_404(User, username=self.kwargs.get('username'))
         return PrivatePost.tags.filter(privatepost__author=user).order_by('name')
 
+    def test_func(self):
+        if str(self.request.user) == self.kwargs.get('username'):
+            return True
+        return False
+
 class PostListView(ListView):
     model = Post
     template_name = 'blog/home.html' # <app>/<model>_<viewtype>.html
@@ -93,7 +98,7 @@ class PostListView(ListView):
 #    def get_queryset(self):
 #        return Post.objects.filter(level = 'public').order_by('-date_posted')
 
-class PrivatePostListView(ListView):
+class PrivatePostListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = PrivatePost
     template_name = 'blog/home.html' # <app>/<model>_<viewtype>.html
     context_object_name = 'posts'
@@ -121,6 +126,11 @@ class PrivatePostListView(ListView):
     def get_queryset(self): 
         user = get_object_or_404(User, username=self.kwargs.get('username'))
         return PrivatePost.objects.filter(author=user)
+
+    def test_func(self):
+        if str(self.request.user) == self.kwargs.get('username'):
+            return True
+        return False
 
 class PostCompactListView(PostListView):
     model = Post
@@ -202,7 +212,7 @@ class PostDetailView(DetailView):
         context['level'] = Post.level
         return context
 
-class PrivatePostDetailView(DetailView):
+class PrivatePostDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     model = PrivatePost
     template_name = 'blog/post_detail.html'
 
@@ -210,6 +220,11 @@ class PrivatePostDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['level'] = PrivatePost.level
         return context
+
+    def test_func(self):
+        if self.request.user == self.get_object().author:
+            return True
+        return False
 
 class TaggedPostListView(ListView):
     model = Post
@@ -342,13 +357,12 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 class PrivatePostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = PrivatePost
-    success_url = '/'   # this has to be /private/username ###################################################
-                        # figure out later how to get username...
-                        # or properly use reverse function
     template_name = 'blog/post_confirm_delete.html'
+    success_url = '/'
     
     def test_func(self):
         post = self.get_object()
+        self.success_url = reverse('post-private', args=[self.request.user])
         if self.request.user == post.author:
             return True
         return False
@@ -398,7 +412,7 @@ class SearchFormView(FormView):
         context['level'] = Post.level
         return context
 
-class PrivateSearchFormView(FormView):
+class PrivateSearchFormView(LoginRequiredMixin, FormView):
     form_class = PrivatePostSearchForm
     template_name = 'blog/search_form.html'
 
@@ -406,7 +420,7 @@ class PrivateSearchFormView(FormView):
         search_term = str(self.request.POST['search_term']) 
         context = self.get_context_data()
         context['search_term'] = search_term
-        context['search_result_list'] = PrivatePost.objects.filter(Q(title__icontains=search_term) | Q(content__icontains=search_term) ).distinct().order_by('-date_posted') 
+        context['search_result_list'] = PrivatePost.objects.filter(author=self.request.user).filter(Q(title__icontains=search_term) | Q(content__icontains=search_term) ).distinct().order_by('-date_posted') 
         return  render(self.request, self.template_name, context)
 
     def get_context_data(self, **kwargs):
