@@ -13,7 +13,7 @@
       {% else %}
         <a class="mr-2" href="{% url 'user-posts' object.author.username %}">{{ object.author }}</a>
   	  {% endif %}
-      <small class="text-muted">{{ object.date_posted|date:"M d, Y" }}</small>
+      <small class="text-muted">{{ object.date_posted|date:"M d, Y H:m" }}</small>
   	  {% if object.level == "private" %}
   	    {% if object.author == user %}
           <a class="btn btn-danger btn-sm mt-1 mb-1 float-right" href="{% url 'privatepost-delete' object.id %}">Del</a>

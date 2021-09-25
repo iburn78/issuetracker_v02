@@ -8,7 +8,7 @@
 				<div class="article-metadata">
 					<img class="rounded article-img mt-1 mb-0" src="{{ post.author.profile.image.url }}">
 					<a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
-  		            <small class="text-muted">{{ post.date_posted|date:"M d, Y" }}</small>
+  		            <small class="text-muted">{{ post.date_posted|date:"M d, Y H:m" }}</small>
 				</div>
 			</div>
 	  		<h4><a class="article-title mt-2 mb-2" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h4>
