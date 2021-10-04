@@ -399,7 +399,7 @@ def milo_twocol(request):
 class SearchFormView(FormView):
     form_class = PostSearchForm
     template_name = 'blog/search_form.html'
-    page_by = 20
+    page_by = 5
 
     def search_db(self, db, search_term, page = 1, page_tag = 1, page_author = 1):
         context = {}
@@ -454,6 +454,19 @@ class SearchFormView(FormView):
 
 class PrivateSearchFormView(LoginRequiredMixin, SearchFormView):
     form_class = PrivatePostSearchForm
+
+    def get(self, request, *args, **kwargs):
+        search_term = str(request.GET.get('search_term'))
+        page = request.GET.get('page')
+        page_tag = request.GET.get('page_tag')
+        page_author = request.GET.get('page_author')
+
+        context = self.get_context_data()
+        if search_term == 'None' or search_term == '': 
+            return  render(self.request, self.template_name, context)
+        else:
+            context = {**context, **self.search_db(PrivatePost, search_term, page, page_tag, page_author)}
+            return  render(self.request, self.template_name, context)
 
     def form_valid(self, form):
         search_term = str(self.request.POST['search_term']) 

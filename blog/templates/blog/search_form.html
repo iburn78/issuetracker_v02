@@ -2,11 +2,13 @@
 {% block post-list-view1 %}
 {% block post-list-view2 %}
 {% block post-list-view3 %}
+{% block post-list-view1p %}
+{% block post-list-view2p %}
     <div class="list_indent">
-        <a class="ml-2 mr-2" href="{% url 'privatepost-compact-list' user %}">{{ post.author }}</a>
-    	<a class="article-title mt-2 mb-2 mr-3" href="{% url 'privatepost-detail' post.id %}">{{ post.title }}</a>
+        <a class="ml-2 mr-2" href="{% url postroot_compact_list user %}">{{ post.author }}</a>
+    	<a class="article-title mt-2 mb-2 mr-3" href="{% url postroot_detail post.id %}">{{ post.title }}</a>
     	{% for tag in post.tags.all %}
-    		<a href="{% url 'tag-privatepost-list' tag.id user %}" class="mr-1 mt-1">#{{ tag }}</a>
+    		<a href="{% url tag_postroot_list tag.id user %}" class="mr-1 mt-1">#{{ tag }}</a>
         {% endfor %}
         <small class="text-muted"> {{ post.date_posted|date:"M d, Y H:m" }}</small>
         <br/>
@@ -14,79 +16,35 @@
 {% endblock %}
 {% endblock %}
 {% endblock %}
+{% endblock %}
+{% endblock %}
 
 
-{% block pgn_srl %}
-{% if pgn_srl.num_pages > 1 %}
+{% block paginator1 %}
+{% block paginator2 %}
+{% block paginator3 %}
+{% if page_obj.num_pages > 1 %}
 <div class="float-right">
-    {% if search_result_list.has_previous %}
-	    <a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&page=1">first</a>
-		<a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&page={{ search_result_list.previous_page_number }}">prev</a>
+    {% if current_page.has_previous %}
+	    <a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&{{page}}=1">first</a>
+		<a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&{{page}}={{ current_page.previous_page_number }}">prev</a>
 	{% endif %}
 
-	{% for num in pgn_srl.page_range %}
-        {% if search_result_list.number == num %}
-			<a class="btn btn-info mb-4" href="?search_term={{search_term}}&page={{ num }}">{{ num }}</a>
-		{% elif num > search_result_list.number|add:'-3' and num < search_result_list.number|add:'3' %}
-			<a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&page={{ num }}">{{ num }}</a>
+	{% for num in page_obj.page_range %}
+        {% if current_page.number == num %}
+			<a class="btn btn-info mb-4" href="?search_term={{search_term}}&{{page}}={{ num }}">{{ num }}</a>
+		{% elif num > current_page.number|add:'-3' and num < current_page.number|add:'3' %}
+			<a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&{{page}}={{ num }}">{{ num }}</a>
 		{% endif %}
 	{% endfor %}
 
-	{% if search_result_list.has_next %}
-		<a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&page={{ search_result_list.next_page_number }}">next</a>
-		<a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&page={{ search_result_list.num_pages }}">last</a>
+	{% if current_page.has_next %}
+		<a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&{{page}}={{ current_page.next_page_number }}">next</a>
+		<a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&{{page}}={{ current_page.num_pages }}">last</a>
 	{% endif %}
 </div>
 </br>
 {% endif %}
 {% endblock %}
-
-{% block pgn_srl_tag %}
-{% if pgn_srl_tag.num_pages > 1 %}
-<div class="float-right">
-    {% if search_result_list_tag.has_previous %}
-	    <a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&page_tag=1">first</a>
-		<a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&page_tag={{ search_result_list_tag.previous_page_number }}">prev</a>
-	{% endif %}
-
-	{% for num in pgn_srl_tag.page_range %}
-        {% if search_result_list_tag.number == num %}
-			<a class="btn btn-info mb-4" href="?search_term={{search_term}}&page_tag={{ num }}">{{ num }}</a>
-		{% elif num > search_result_list_tag.number|add:'-3' and num < search_result_list_tag.number|add:'3' %}
-			<a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&page_tag={{ num }}">{{ num }}</a>
-		{% endif %}
-	{% endfor %}
-
-	{% if search_result_list_tag.has_next %}
-		<a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&page_tag={{ search_result_list_tag.next_page_number }}">next</a>
-		<a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&page_tag={{ search_result_list_tag.num_pages }}">last</a>
-	{% endif %}
-</div>
-</br>
-{% endif %}
 {% endblock %}
-
-{% block pgn_srl_author %}
-{% if pgn_srl_author.num_pages > 1 %}
-<div class="float-right">
-    {% if search_result_list_author.has_previous %}
-	    <a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&page_author=1">first</a>
-		<a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&page_author={{ search_result_list_author.previous_page_number }}">prev</a>
-	{% endif %}
-
-	{% for num in pgn_srl_author.page_range %}
-        {% if search_result_list_author.number == num %}
-			<a class="btn btn-info mb-4" href="?search_term={{search_term}}&page_author={{ num }}">{{ num }}</a>
-		{% elif num > search_result_list_author.number|add:'-3' and num < search_result_list_author.number|add:'3' %}
-			<a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&page_author={{ num }}">{{ num }}</a>
-		{% endif %}
-	{% endfor %}
-
-	{% if search_result_list_author.has_next %}
-		<a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&page_author={{ search_result_list_author.next_page_number }}">next</a>
-		<a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&page_author={{ search_result_list_author.num_pages }}">last</a>
-	{% endif %}
-</div>
-</br>
-{% endif %}
 {% endblock %}
