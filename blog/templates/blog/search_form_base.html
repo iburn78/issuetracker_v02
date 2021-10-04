@@ -1,0 +1,66 @@
+{% extends "blog/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+
+	<form method="POST" enctype="multipart/form-data" autocomplete="off">
+	    {% csrf_token %}
+	    <fieldset class ="form-group">
+			{{ form | crispy }}
+	    </fieldset>
+	    <div class="from-group">
+			<button class="btn btn-info" type="submit">search</button>
+			{% if level == "private" %}
+				<a href={% url 'privatesearch-form' %} class="btn btn-outline-info float-right" role="button">clear</a>
+			{% else %}
+				<a href={% url 'search-form' %} class="btn btn-outline-info float-right" role="button">clear</a>
+			{% endif %}
+	    </div>
+	</form>
+    </div>
+	{% if search_requested == True %}
+    {% if search_result_list %}
+    	<div class="ml-2"><b>{{ pgn_srl.count }} post{% if pgn_srl.count > 1 %}s{% endif %} with "{{search_term}}" in title and content... </b><br/></div>
+		<div class="border-top border-warning mt-1"> </div>
+		<div class="border-top border-warning mb-1"> </div>
+        {% for post in search_result_list %}
+            {% block post-list-view1 %}{% endblock %}
+        {% endfor %}
+		{% block pgn_srl %}{% endblock %}
+    {% elif search_term %}
+    	<div style="color:#808080" class="ml-2"><i> search word "{{ search_term }}" not found in title and content </i><br/></div>
+    {% endif %}
+    <br/>
+
+    {% if search_result_list_tag %}
+    	<div class="ml-2"><b>{{ pgn_srl_tag.count }} post{% if pgn_srl_tag.count > 1 %}s{% endif %} with "{{search_term}}" in tags... </b><br/></div>
+		<div class="border-top border-warning mt-1"> </div>
+		<div class="border-top border-warning mb-1"> </div>
+        {% for post in search_result_list_tag %}
+	        {% block post-list-view2 %}{% endblock %}
+        {% endfor %}
+		{% block pgn_srl_tag %}{% endblock %}
+    {% elif search_term %}
+    	<div style="color:#808080" class="ml-2"><i> search word "{{ search_term }}" not found in tags</i><br/></div>
+    {% endif %}
+    <br/>
+
+	{% if level != "private" %}
+    	{% if search_result_list_author %}
+    		<div class="ml-2"><b>{{ pgn_srl_author.count }} post{% if pgn_srl_author.count > 1 %}s{% endif %} with "{{search_term}}" in author name... </b><br/></div>
+			<div class="border-top border-warning mt-1"> </div>
+			<div class="border-top border-warning mb-1"> </div>
+        	{% for post in search_result_list_author %}
+	            {% block post-list-view3 %}{% endblock %}
+        	{% endfor %}
+	    {% elif search_term %}
+    		<div style="color:#808080" class="ml-2"><i> search word "{{ search_term }}" not found in authors</i><br/></div>
+	    {% endif %}
+		{% block pgn_srl_author %}{% endblock %}
+	{% endif %}
+    <br/>
+	{% endif %} 
+
+{% endblock content %} 
+
+

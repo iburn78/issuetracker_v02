@@ -9,7 +9,7 @@ from django.views.generic import (
         DeleteView
         )
 from django.http import HttpResponse
-from blog.models import Post, PrivatePost
+from blog.models import PostRoot, Post, PrivatePost
 from taggit.models import Tag
 from django.views.generic.edit import FormView
 from blog.forms import MiloSearchForm, PostSearchForm, PrivatePostSearchForm
@@ -399,7 +399,33 @@ def milo_twocol(request):
 class SearchFormView(FormView):
     form_class = PostSearchForm
     template_name = 'blog/search_form.html'
-    page_by = 5
+    page_by = 20
+
+    def search_db(self, db, search_term, page = 1, page_tag = 1, page_author = 1):
+        context = {}
+        context['search_requested'] = True
+        context['search_term'] = search_term
+        search_result_list = db.objects.filter(Q(title__icontains=search_term) | Q(content__icontains=search_term) ).distinct().order_by('-date_posted') 
+        search_result_list_tag = db.objects.filter(tags__name__icontains=search_term).distinct().order_by('-date_posted') 
+        search_result_list_author = db.objects.filter(author__username__icontains=search_term).distinct().order_by('-date_posted') 
+
+        pgn_srl = Paginator(search_result_list, self.page_by)
+        pgn_srl_tag = Paginator(search_result_list_tag, self.page_by)
+        pgn_srl_author = Paginator(search_result_list_author, self.page_by)
+
+        pgn_srl_content = pgn_srl.get_page(page)
+        pgn_srl_content_tag = pgn_srl_tag.get_page(page_tag)
+        pgn_srl_content_author = pgn_srl_author.get_page(page_author)
+
+        context['search_result_list'] = pgn_srl_content
+        context['search_result_list_tag'] = pgn_srl_content_tag
+        context['search_result_list_author'] = pgn_srl_content_author
+
+        context['pgn_srl'] = pgn_srl
+        context['pgn_srl_tag'] = pgn_srl_tag
+        context['pgn_srl_author'] = pgn_srl_author
+
+        return context
 
     def get(self, request, *args, **kwargs):
         search_term = str(request.GET.get('search_term'))
@@ -411,53 +437,13 @@ class SearchFormView(FormView):
         if search_term == 'None' or search_term == '': 
             return  render(self.request, self.template_name, context)
         else:
-            context['search_requested'] = True
-            context['search_term'] = search_term
-            search_result_list = Post.objects.filter(Q(title__icontains=search_term) | Q(content__icontains=search_term) ).distinct().order_by('-date_posted') 
-            search_result_list_tag = Post.objects.filter(tags__name__icontains=search_term).distinct().order_by('-date_posted') 
-            search_result_list_author = Post.objects.filter(author__username__icontains=search_term).distinct().order_by('-date_posted') 
-
-            pgn_srl = Paginator(search_result_list, self.page_by)
-            pgn_srl_tag = Paginator(search_result_list_tag, self.page_by)
-            pgn_srl_author = Paginator(search_result_list_author, self.page_by)
-
-            pgn_srl_content = pgn_srl.get_page(page)
-            pgn_srl_content_tag = pgn_srl_tag.get_page(page_tag)
-            pgn_srl_content_author = pgn_srl_author.get_page(page_author)
-
-            context['search_result_list'] = pgn_srl_content
-            context['search_result_list_tag'] = pgn_srl_content_tag
-            context['search_result_list_author'] = pgn_srl_content_author
-
-            context['pgn_srl'] = pgn_srl
-            context['pgn_srl_tag'] = pgn_srl_tag
-            context['pgn_srl_author'] = pgn_srl_author
+            context = {**context, **self.search_db(Post, search_term, page, page_tag, page_author)}
             return  render(self.request, self.template_name, context)
 
-    def form_valid(self, form, page=1):
+    def form_valid(self, form):
         search_term = str(self.request.POST['search_term']) 
         context = self.get_context_data()
-        context['search_requested'] = True
-        context['search_term'] = search_term
-        search_result_list = Post.objects.filter(Q(title__icontains=search_term) | Q(content__icontains=search_term) ).distinct().order_by('-date_posted') 
-        search_result_list_tag = Post.objects.filter(tags__name__icontains=search_term).distinct().order_by('-date_posted') 
-        search_result_list_author = Post.objects.filter(author__username__icontains=search_term).distinct().order_by('-date_posted') 
-
-        pgn_srl = Paginator(search_result_list, self.page_by)
-        pgn_srl_tag = Paginator(search_result_list_tag, self.page_by)
-        pgn_srl_author = Paginator(search_result_list_author, self.page_by)
-
-        pgn_srl_content = pgn_srl.get_page(1)
-        pgn_srl_content_tag = pgn_srl_tag.get_page(1)
-        pgn_srl_content_author = pgn_srl_author.get_page(1)
-
-        context['search_result_list'] = pgn_srl_content
-        context['search_result_list_tag'] = pgn_srl_content_tag
-        context['search_result_list_author'] = pgn_srl_content_author
-        context['pgn_srl'] = pgn_srl
-        context['pgn_srl_tag'] = pgn_srl_tag
-        context['pgn_srl_author'] = pgn_srl_author
-
+        context = {**context, **self.search_db(Post, search_term)}
         return  render(self.request, self.template_name, context)
 
     def get_context_data(self, **kwargs):
@@ -466,16 +452,13 @@ class SearchFormView(FormView):
         context['search_requested'] = False
         return context
 
-class PrivateSearchFormView(LoginRequiredMixin, FormView):
+class PrivateSearchFormView(LoginRequiredMixin, SearchFormView):
     form_class = PrivatePostSearchForm
-    template_name = 'blog/search_form.html'
 
     def form_valid(self, form):
         search_term = str(self.request.POST['search_term']) 
         context = self.get_context_data()
-        context['search_term'] = search_term
-        context['search_result_list'] = PrivatePost.objects.filter(author=self.request.user).filter(Q(title__icontains=search_term) | Q(content__icontains=search_term) ).distinct().order_by('-date_posted') 
-        context['search_result_list_tag'] = PrivatePost.objects.filter(tags__name__icontains=search_term).distinct().order_by('-date_posted') 
+        context = {**context, **self.search_db(PrivatePost, search_term)}
         return  render(self.request, self.template_name, context)
 
     def get_context_data(self, **kwargs):
