@@ -18,67 +18,109 @@
 	    </div>
 	</form>
     </div>
+
 	{% if search_requested == True %}
-    {% if search_result_list %}
-    	<div class="ml-2"><b>{{ pgn_srl.count }} post{% if pgn_srl.count > 1 %}s{% endif %} with "{{search_term}}" in title and content... </b><br/></div>
-		<div class="border-top border-warning mt-1"> </div>
-		<div class="border-top border-warning mb-1"> </div>
-		{% if level == "private" %}
-        		{% for post in search_result_list %}
-            		{% block post-list-view1p %}{% endblock %}
-        		{% endfor %}
-		{% else %}
-        		{% for post in search_result_list %}
-            		{% block post-list-view1 %}{% endblock %}
-        		{% endfor %}
-		{% endif %}
-		{% with page_obj=pgn_srl current_page=search_result_list page="page" %}
-			{% block paginator1 %}{% endblock %}
-		{% endwith %}
-    {% elif search_term %}
-    	<div style="color:#808080" class="ml-2"><i> search word "{{ search_term }}" not found in title and content </i><br/></div>
-    {% endif %}
-    <br/>
+	<div class="accordion">
+	  <div class="card">
+	    <div class="" id="headingOne">
+	      <h2 class="mb-0">
+	        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+    			{% if search_result_list %}
+    				<div class="ml-2"><b>{{ pgn_srl.count }} post{% if pgn_srl.count > 1 %}s{% endif %} with "{{search_term}}" in title and content... </b><br/></div>
+    			{% elif search_term %}
+    				<div style="color:#808080" class="ml-2"><i> search word "{{ search_term }}" not found in title and content </i><br/></div>
+    			{% endif %}
+	        </button>
+	      </h2>
+	    </div>
 
-    {% if search_result_list_tag %}
-    	<div class="ml-2"><b>{{ pgn_srl_tag.count }} post{% if pgn_srl_tag.count > 1 %}s{% endif %} with "{{search_term}}" in tags... </b><br/></div>
-		<div class="border-top border-warning mt-1"> </div>
-		<div class="border-top border-warning mb-1"> </div>
-		{% if level == "private" %}
-        		{% for post in search_result_list_tag %}
-            		{% block post-list-view2p %}{% endblock %}
-        		{% endfor %}
-		{% else %}
-        		{% for post in search_result_list_tag %}
-            		{% block post-list-view2 %}{% endblock %}
-        		{% endfor %}
-		{% endif %}
-		{% with page_obj=pgn_srl_tag current_page=search_result_list_tag page="page_tag" %}
-			{% block paginator2 %}{% endblock %}
-		{% endwith %}
-    {% elif search_term %}
-    	<div style="color:#808080" class="ml-2"><i> search word "{{ search_term }}" not found in tags</i><br/></div>
-    {% endif %}
-    <br/>
+    	{% if search_result_list %}
+	    	<div id="collapseOne" class="collapse show" aria-labelledby="headingOne">
+    	{% else %}
+	    	<div id="collapseOne" class="collapse" aria-labelledby="headingOne">
+    	{% endif %}
+	      <div class="card-body">
+    			{% if search_result_list %}
+						{% if level == "private" %}
+        						{% for post in search_result_list %}
+            						{% block post-list-view1p %}{% endblock %}
+        						{% endfor %}
+						{% else %}
+        						{% for post in search_result_list %}
+            						{% block post-list-view1 %}{% endblock %}
+        						{% endfor %}
+						{% endif %}
+						{% with page_obj=pgn_srl current_page=search_result_list page="page" %}
+							{% block paginator1 %}{% endblock %}
+						{% endwith %}
+					{% endif %}
+	      </div>
+	    </div>
+	  </div>
 
-	{% if level != "private" %}
-    	{% if search_result_list_author %}
-    		<div class="ml-2"><b>{{ pgn_srl_author.count }} post{% if pgn_srl_author.count > 1 %}s{% endif %} with "{{search_term}}" in author name... </b><br/></div>
-			<div class="border-top border-warning mt-1"> </div>
-			<div class="border-top border-warning mb-1"> </div>
-        		{% for post in search_result_list_author %}
-            		{% block post-list-view3 %}{% endblock %}
-        		{% endfor %}
-			{% with page_obj=pgn_srl_author current_page=search_result_list_author page="page_author" %}
-				{% block paginator3 %}{% endblock %}
-			{% endwith %}
-	    {% elif search_term %}
-    		<div style="color:#808080" class="ml-2"><i> search word "{{ search_term }}" not found in authors</i><br/></div>
-	    {% endif %}
-	{% endif %}
-    <br/>
+	  <div class="card">
+	    <div class="" id="headingTwo">
+	      <h2 class="mb-0">
+	        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+    			{% if search_result_list_tag %}
+    				<div class="ml-2"><b>{{ pgn_srl_tag.count }} post{% if pgn_srl_tag.count > 1 %}s{% endif %} with "{{search_term}}" in tags... </b><br/></div>
+    			{% elif search_term %}
+    				<div style="color:#808080" class="ml-2"><i> search word "{{ search_term }}" not found in tags</i><br/></div>
+    			{% endif %}
+	        </button>
+	      </h2>
+	    </div>
+	    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
+	      <div class="card-body">
+    			{% if search_result_list_tag %}
+						{% if level == "private" %}
+        						{% for post in search_result_list_tag %}
+            						{% block post-list-view2p %}{% endblock %}
+        						{% endfor %}
+						{% else %}
+        						{% for post in search_result_list_tag %}
+            						{% block post-list-view2 %}{% endblock %}
+        						{% endfor %}
+						{% endif %}
+						{% with page_obj=pgn_srl_tag current_page=search_result_list_tag page="page_tag" %}
+							{% block paginator2 %}{% endblock %}
+						{% endwith %}
+					{% endif %}
+	      </div>
+	    </div>
+	  </div>
+
+	  {% if level != "private" %}
+	  <div class="card">
+	    <div class="" id="headingThree">
+	    <h2 class="mb-0">
+	      <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+    		{% if search_result_list_author %}
+    			<div class="ml-2"><b>{{ pgn_srl_author.count }} post{% if pgn_srl_author.count > 1 %}s{% endif %} with "{{search_term}}" in author name... </b><br/></div>
+	    	{% elif search_term %}
+    			<div style="color:#808080" class="ml-2"><i> search word "{{ search_term }}" not found in authors</i><br/></div>
+	    	{% endif %}
+	      </button>
+	    </h2>
+	    </div>
+	    <div id="collapseThree" class="collapse" aria-labelledby="headingThree">
+	    <div class="card-body">
+    		{% if search_result_list_author %}
+      		{% for post in search_result_list_author %}
+          		{% block post-list-view3 %}{% endblock %}
+      		{% endfor %}
+					{% with page_obj=pgn_srl_author current_page=search_result_list_author page="page_author" %}
+						{% block paginator3 %}{% endblock %}
+					{% endwith %}
+				{% endif %}
+	    </div>
+	    </div>
+	  </div>
+	  {% endif %}
+	</div>
+	<p style="color:#808080" class="small float-right">click to expand/collapse</p>
 	{% endif %} 
-
+	
 {% endblock content %} 
 
 

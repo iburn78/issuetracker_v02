@@ -21,13 +21,18 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='PrivatePost',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date_posted', models.DateTimeField(default=django.utils.timezone.now)),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('date_posted', models.DateTimeField(
+                    default=django.utils.timezone.now)),
                 ('title', models.CharField(max_length=100)),
                 ('content', tinymce.models.HTMLField()),
                 ('image', models.ImageField(blank=True, upload_to='post_imgs')),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('tags', taggit.managers.TaggableManager(blank=True, help_text='A comma-separated list of tags.', through='taggit.TaggedItem', to='taggit.Tag', verbose_name='Tags')),
+                ('author', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('tags', taggit.managers.TaggableManager(blank=True,
+                 help_text='space (or comma for multiple-word-tags) separated',
+                 through='taggit.TaggedItem', to='taggit.Tag', verbose_name='Tags')),
             ],
             options={
                 'abstract': False,
@@ -36,13 +41,18 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Post',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date_posted', models.DateTimeField(default=django.utils.timezone.now)),
+                ('id', models.AutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
+                ('date_posted', models.DateTimeField(
+                    default=django.utils.timezone.now)),
                 ('title', models.CharField(max_length=100)),
                 ('content', tinymce.models.HTMLField()),
                 ('image', models.ImageField(blank=True, upload_to='post_imgs')),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('tags', taggit.managers.TaggableManager(blank=True, help_text='A comma-separated list of tags.', through='taggit.TaggedItem', to='taggit.Tag', verbose_name='Tags')),
+                ('author', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('tags', taggit.managers.TaggableManager(blank=True,
+                 help_text='space (or comma for multiple-word-tags) separated',
+                 through='taggit.TaggedItem', to='taggit.Tag', verbose_name='Tags')),
             ],
             options={
                 'abstract': False,

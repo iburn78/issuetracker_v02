@@ -3,10 +3,10 @@
 {% block post-list-view2 %}
 {% block post-list-view3 %}
     <div class="list_indent">
-        <a class="ml-2 mr-2" href="{% url 'user-post-list' post.author %}">{{ post.author }}</a>
+      <a class="ml-2 mr-2" href="{% url 'user-post-list' post.author %}">{{ post.author }}</a>
     	<a class="article-title mt-2 mb-2 mr-3" href="{% url 'post-detail' post.id %}">{{ post.title }}</a>
     	{% for tag in post.tags.all %}
-    		<a href="{% url 'tag_post_list' tag.id %}" class="mr-1 mt-1">#{{ tag }}</a>
+    		<a href="{% url 'tag-post-list' tag.id %}" class="mr-1 mt-1">#{{ tag }}</a>
         {% endfor %}
         <small class="text-muted"> {{ post.date_posted|date:"M d, Y H:m" }}</small>
         <br/>
@@ -18,7 +18,7 @@
 {% block post-list-view1p %}
 {% block post-list-view2p %}
     <div class="list_indent">
-        <a class="ml-2 mr-2" href="{% url 'privatepost-compact-list' user %}">{{ post.author }}</a>
+      <a class="ml-2 mr-2" href="{% url 'privatepost-compact-list' user %}">{{ post.author }}</a>
     	<a class="article-title mt-2 mb-2 mr-3" href="{% url 'privatepost-detail' post.id %}">{{ post.title }}</a>
     	{% for tag in post.tags.all %}
     		<a href="{% url 'tag-privatepost-list' tag.id user %}" class="mr-1 mt-1">#{{ tag }}</a>
@@ -35,21 +35,21 @@
 {% if page_obj.num_pages > 1 %}
 <div class="float-right">
     {% if current_page.has_previous %}
-	    <a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&{{page}}=1">first</a>
-		<a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&{{page}}={{ current_page.previous_page_number }}">prev</a>
+	    <a class="btn btn-sm btn-outline-info mb-4" href="?search_term={{search_term}}&{{page}}=1">first</a>
+		<a class="btn btn-sm btn-outline-info mb-4" href="?search_term={{search_term}}&{{page}}={{ current_page.previous_page_number }}">prev</a>
 	{% endif %}
 
 	{% for num in page_obj.page_range %}
         {% if current_page.number == num %}
-			<a class="btn btn-info mb-4" href="?search_term={{search_term}}&{{page}}={{ num }}">{{ num }}</a>
+			<a class="btn btn-sm btn-info mb-4" href="?search_term={{search_term}}&{{page}}={{ num }}">{{ num }}</a>
 		{% elif num > current_page.number|add:'-3' and num < current_page.number|add:'3' %}
-			<a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&{{page}}={{ num }}">{{ num }}</a>
+			<a class="btn btn-sm btn-outline-info mb-4" href="?search_term={{search_term}}&{{page}}={{ num }}">{{ num }}</a>
 		{% endif %}
 	{% endfor %}
 
 	{% if current_page.has_next %}
-		<a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&{{page}}={{ current_page.next_page_number }}">next</a>
-		<a class="btn btn-outline-info mb-4" href="?search_term={{search_term}}&{{page}}={{ current_page.num_pages }}">last</a>
+		<a class="btn btn-sm btn-outline-info mb-4" href="?search_term={{search_term}}&{{page}}={{ current_page.next_page_number }}">next</a>
+		<a class="btn btn-sm btn-outline-info mb-4" href="?search_term={{search_term}}&{{page}}={{ page_obj.num_pages }}">last</a>
 	{% endif %}
 </div>
 </br>
