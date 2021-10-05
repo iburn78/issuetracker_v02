@@ -2,14 +2,16 @@ import sqlite3
 
 conn = sqlite3.connect("db.sqlite3")
 cur = conn.cursor()
-#conn.execute("""
-#    INSERT INTO blog_post (id, title, date_posted, author_id, image, content) 
-#    VALUES (7, 'auto post 2', datetime('now', 'localtime'), 8, '', 'auto generated text body');
-#    """)
-cur.execute("select id, title, author_id from blog_post where author_id=8")
-records = cur.fetchall()
-print(records)
-print(len(records))
+for i in range(10,100):
+    conn.execute(f"""
+        INSERT INTO blog_post (id, title, date_posted, author_id, image, content) 
+        VALUES ({i}, 'auto post {i}', datetime('now', 'localtime'), 1, '', 'auto generated text body {i}');
+        """)
+
+# cur.execute("select id, title, author_id from blog_post where author_id=8")
+# records = cur.fetchall()
+# print(records)
+# print(len(records))
 conn.commit()
 conn.close()
 

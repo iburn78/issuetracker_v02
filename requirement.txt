@@ -1,4 +1,5 @@
 asgiref==3.3.1
+autopep8==1.5.7
 beautifulsoup4==4.10.0
 botocore==1.12.197
 bs4==0.0.1
@@ -11,6 +12,7 @@ jmespath==0.9.4
 numpy==1.20.2
 Pillow==8.1.2
 protobuf==3.10.0
+pycodestyle==2.7.0
 pyparsing==2.4.5
 pypl==40.10
 python-dateutil==2.8.0
@@ -20,4 +22,5 @@ six==1.12.0
 soupsieve==2.2.1
 sqlparse==0.3.0
 svgwrite==1.4.1
+toml==0.10.2
 urllib3==1.25.3

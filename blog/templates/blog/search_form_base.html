@@ -24,17 +24,13 @@
 		<div class="border-top border-warning mt-1"> </div>
 		<div class="border-top border-warning mb-1"> </div>
 		{% if level == "private" %}
-			{% with postroot_compact_list="privatepost-compact-list" postroot_detail="privatepost-detail" tag_postroot_list="tag-privatepost-list" %}
-        		{% for post in search_result_list %}
-            		{% block post-list-view1 %}{% endblock %}
-        		{% endfor %}
-			{% endwith %}
-		{% else %}
-			{% with postroot_compact_list="post-compact-list" postroot_detail="post-detail" tag_postroot_list="tag-post-list" %}
         		{% for post in search_result_list %}
             		{% block post-list-view1p %}{% endblock %}
         		{% endfor %}
-			{% endwith %}
+		{% else %}
+        		{% for post in search_result_list %}
+            		{% block post-list-view1 %}{% endblock %}
+        		{% endfor %}
 		{% endif %}
 		{% with page_obj=pgn_srl current_page=search_result_list page="page" %}
 			{% block paginator1 %}{% endblock %}
@@ -49,17 +45,13 @@
 		<div class="border-top border-warning mt-1"> </div>
 		<div class="border-top border-warning mb-1"> </div>
 		{% if level == "private" %}
-			{% with postroot_compact_list="privatepost-compact-list" postroot_detail="privatepost-detail" tag_postroot_list="tag-privatepost-list" %}
-        		{% for post in search_result_list_tag %}
-            		{% block post-list-view2 %}{% endblock %}
-        		{% endfor %}
-			{% endwith %}
-		{% else %}
-			{% with postroot_compact_list="post-compact-list" postroot_detail="post-detail" tag_postroot_list="tag-post-list" %}
         		{% for post in search_result_list_tag %}
             		{% block post-list-view2p %}{% endblock %}
         		{% endfor %}
-			{% endwith %}
+		{% else %}
+        		{% for post in search_result_list_tag %}
+            		{% block post-list-view2 %}{% endblock %}
+        		{% endfor %}
 		{% endif %}
 		{% with page_obj=pgn_srl_tag current_page=search_result_list_tag page="page_tag" %}
 			{% block paginator2 %}{% endblock %}
@@ -74,11 +66,9 @@
     		<div class="ml-2"><b>{{ pgn_srl_author.count }} post{% if pgn_srl_author.count > 1 %}s{% endif %} with "{{search_term}}" in author name... </b><br/></div>
 			<div class="border-top border-warning mt-1"> </div>
 			<div class="border-top border-warning mb-1"> </div>
-			{% with postroot_compact_list="post-compact-list" postroot_detail="post-detail" tag_postroot_list="tag-post-list" %}
         		{% for post in search_result_list_author %}
             		{% block post-list-view3 %}{% endblock %}
         		{% endfor %}
-			{% endwith %}
 			{% with page_obj=pgn_srl_author current_page=search_result_list_author page="page_author" %}
 				{% block paginator3 %}{% endblock %}
 			{% endwith %}
