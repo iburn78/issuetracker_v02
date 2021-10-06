@@ -15,6 +15,9 @@ class PostRoot(models.Model):
     image = models.ImageField(upload_to='post_imgs', blank=True)
     tags = TaggableManager(blank=True)
 
+    def get_preview_title(self):
+        return self.title[:30]
+
     def get_preview_text(self):
         soup = BeautifulSoup(self.content, 'html.parser')
         p_tag = soup.find('p')
