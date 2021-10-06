@@ -16,15 +16,15 @@ class PostRoot(models.Model):
     tags = TaggableManager(blank=True)
 
     def get_preview_title(self):
-        return self.title[:30]
+        return self.title[:50]
 
     def get_preview_text(self):
         soup = BeautifulSoup(self.content, 'html.parser')
         p_tag = soup.find('p')
         if p_tag != None:
-            return p_tag.text[:50]
+            return p_tag.text[:70]
         else:
-            return self.content[:50]
+            return self.content[:70]
 
     def __str__(self):
         return self.title

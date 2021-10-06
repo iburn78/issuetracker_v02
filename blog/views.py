@@ -437,10 +437,16 @@ class SearchFormView(FormView):
         context = {}
         context['search_requested'] = True
         context['search_term'] = search_term
-        search_result_list = db.objects.filter(Q(title__icontains=search_term) | Q(
-            content__icontains=search_term)).distinct().order_by('-date_posted')
-        search_result_list_tag = db.objects.filter(
-            tags__name__icontains=search_term).distinct().order_by('-date_posted')
+        if db != PrivatePost:
+            search_result_list = db.objects.filter(Q(title__icontains=search_term) | Q(
+                content__icontains=search_term)).distinct().order_by('-date_posted')
+            search_result_list_tag = db.objects.filter(
+                tags__name__icontains=search_term).distinct().order_by('-date_posted')
+        else: 
+            search_result_list = db.objects.filter(author__username=str(self.request.user)).filter(Q(title__icontains=search_term) | Q(
+                content__icontains=search_term)).distinct().order_by('-date_posted')
+            search_result_list_tag = db.objects.filter(author__username=str(self.request.user)).filter(
+                tags__name__icontains=search_term).distinct().order_by('-date_posted')
 
         pgn_srl = Paginator(search_result_list, self.page_by)
         pgn_srl_tag = Paginator(search_result_list_tag, self.page_by)
