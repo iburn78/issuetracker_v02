@@ -7,8 +7,8 @@ from blog.models import Post, PrivatePost  # nopep8
 
 conn = sqlite3.connect("db.sqlite3")
 cur = conn.cursor()
-for i in range(20, 40):
-    db = 'privatepost'  # 'privatepost' or 'post'
+for i in range(51, 70):
+    db = 'PrivatePost'  # 'privatepost' or 'post'
     author_id = 1
     conn.execute(f"""
         INSERT INTO blog_{db} (id, title, date_posted, author_id, image, content)
@@ -16,7 +16,7 @@ for i in range(20, 40):
         """)
     conn.commit()
     PrivatePost.objects.filter(id=i).get().tags.add(
-        f"tag{i}", "auto-gen-private")
+        f"tag{i}", "auto-gen")
     # print(f"{i} is done")
 
 # cur.execute("select id, title, author_id from blog_post where author_id=8")

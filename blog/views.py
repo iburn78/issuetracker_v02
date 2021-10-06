@@ -469,20 +469,29 @@ class SearchFormView(FormView):
         page_tag = request.GET.get('page_tag')
         page_author = request.GET.get('page_author')
         if page == None:
+            request.session["collapse"] = ''
             if request.session.get("page") == None:
                 page = 1
             else:
                 page = request.session.get("page")
+        else:
+            request.session["collapse"] = 'show'
         if page_tag == None:
+            request.session["collapse_tag"] = ''
             if request.session.get("page_tag") == None:
                 page_tag = 1
             else:
                 page_tag = request.session.get("page_tag")
+        else:
+            request.session["collapse_tag"] = 'show'
         if page_author == None:
+            request.session["collapse_author"] = ''
             if request.session.get("page_author") == None:
                 page_author = 1
             else:
                 page_author = request.session.get("page_author")
+        else:
+            request.session["collapse_author"] = 'show'
         try:
             page = int(page)
             page_tag = int(page_tag)
@@ -502,6 +511,9 @@ class SearchFormView(FormView):
             return render(self.request, self.template_name, context)
         else:
             p, t, a = self.page_session(request)
+            context["collapse"] = request.session.get("collapse")
+            context["collapse_tag"] = request.session.get("collapse_tag")
+            context["collapse_author"] = request.session.get("collapse_author")
             context = {
                 **context, **self.search_db(db, search_term, p, t, a)}
             return render(self.request, self.template_name, context)
@@ -509,6 +521,12 @@ class SearchFormView(FormView):
     def form_valid(self, form, db=Post):
         search_term = str(self.request.POST['search_term'])
         context = self.get_context_data()
+        context["collapse"] = ''
+        context["collapse_tag"] = ''
+        context["collapse_author"] = ''
+        self.request.session["page"] = 1
+        self.request.session["page_tag"] = 1
+        self.request.session["page_author"] = 1
         context = {**context, **self.search_db(db, search_term)}
         return render(self.request, self.template_name, context)
 

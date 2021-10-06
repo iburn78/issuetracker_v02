@@ -1,7 +1,7 @@
 {% extends "blog/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <div class="content-section">
+<div class="content-section">
 
 	<form method="POST" enctype="multipart/form-data" autocomplete="off">
 	    {% csrf_token %}
@@ -20,35 +20,34 @@
     </div>
 
 	{% if search_requested == True %}
-	<div class="accordion">
+	<div class="accordion" id="accordion">
 	  <div class="card">
 	    <div class="" id="headingOne">
 	      <h2 class="mb-0">
-	        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+	        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
     			{% if search_result_list %}
-    				<div class="ml-2"><b>{{ pgn_srl.count }} post{% if pgn_srl.count > 1 %}s{% endif %} with "{{search_term}}" in title and content... </b><br/></div>
+    				<div class="ml-2"><b>{{ pgn_srl.count }} post{% if pgn_srl.count > 1 %}s{% endif %} with "{{search_term}}" in title and content... </b></div>
     			{% elif search_term %}
-    				<div style="color:#808080" class="ml-2"><i> search word "{{ search_term }}" not found in title and content </i><br/></div>
+    				<div style="color:#808080" class="ml-2"><i> search word "{{ search_term }}" not found in title and content </i></div>
     			{% endif %}
 	        </button>
 	      </h2>
 	    </div>
-
-    	{% if search_result_list %}
-	    	<div id="collapseOne" class="collapse show" aria-labelledby="headingOne">
-    	{% else %}
-	    	<div id="collapseOne" class="collapse" aria-labelledby="headingOne">
-    	{% endif %}
+			{% if search_result_list and collapse == '' and collapse_tag == '' and collapse_author == '' %}
+	    	<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+			{% else %}
+	    	<div id="collapseOne" class="collapse {{collapse}}" aria-labelledby="headingOne" data-parent="#accordion">
+			{% endif %}
 	      <div class="card-body">
     			{% if search_result_list %}
 						{% if level == "private" %}
-        						{% for post in search_result_list %}
-            						{% block post-list-view1p %}{% endblock %}
-        						{% endfor %}
+       				{% for post in search_result_list %}
+           			{% block post-list-view1p %}{% endblock %}
+       				{% endfor %}
 						{% else %}
-        						{% for post in search_result_list %}
-            						{% block post-list-view1 %}{% endblock %}
-        						{% endfor %}
+       				{% for post in search_result_list %}
+          			{% block post-list-view1 %}{% endblock %}
+       				{% endfor %}
 						{% endif %}
 						{% with page_obj=pgn_srl current_page=search_result_list page="page" %}
 							{% block paginator1 %}{% endblock %}
@@ -61,16 +60,16 @@
 	  <div class="card">
 	    <div class="" id="headingTwo">
 	      <h2 class="mb-0">
-	        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+	        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
     			{% if search_result_list_tag %}
-    				<div class="ml-2"><b>{{ pgn_srl_tag.count }} post{% if pgn_srl_tag.count > 1 %}s{% endif %} with "{{search_term}}" in tags... </b><br/></div>
+    				<div class="ml-2"><b>{{ pgn_srl_tag.count }} post{% if pgn_srl_tag.count > 1 %}s{% endif %} with "{{search_term}}" in tags... </b></div>
     			{% elif search_term %}
-    				<div style="color:#808080" class="ml-2"><i> search word "{{ search_term }}" not found in tags</i><br/></div>
+    				<div style="color:#808080" class="ml-2"><i> search word "{{ search_term }}" not found in tags</i></div>
     			{% endif %}
 	        </button>
 	      </h2>
 	    </div>
-	    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
+	    <div id="collapseTwo" class="collapse {{collapse_tag}}" aria-labelledby="headingTwo" data-parent="#accordion">
 	      <div class="card-body">
     			{% if search_result_list_tag %}
 						{% if level == "private" %}
@@ -94,25 +93,25 @@
 	  <div class="card">
 	    <div class="" id="headingThree">
 	    <h2 class="mb-0">
-	      <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+	      <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
     		{% if search_result_list_author %}
-    			<div class="ml-2"><b>{{ pgn_srl_author.count }} post{% if pgn_srl_author.count > 1 %}s{% endif %} with "{{search_term}}" in author name... </b><br/></div>
+    			<div class="ml-2"><b>{{ pgn_srl_author.count }} post{% if pgn_srl_author.count > 1 %}s{% endif %} with "{{search_term}}" in author name... </b></div>
 	    	{% elif search_term %}
-    			<div style="color:#808080" class="ml-2"><i> search word "{{ search_term }}" not found in authors</i><br/></div>
+    			<div style="color:#808080" class="ml-2"><i> search word "{{ search_term }}" not found in authors</i></div>
 	    	{% endif %}
 	      </button>
 	    </h2>
 	    </div>
-	    <div id="collapseThree" class="collapse" aria-labelledby="headingThree">
+	    <div id="collapseThree" class="collapse {{collapse_author}}" aria-labelledby="headingThree" data-parent="#accordion">
 	    <div class="card-body">
     		{% if search_result_list_author %}
-      		{% for post in search_result_list_author %}
-          		{% block post-list-view3 %}{% endblock %}
-      		{% endfor %}
-					{% with page_obj=pgn_srl_author current_page=search_result_list_author page="page_author" %}
-						{% block paginator3 %}{% endblock %}
-					{% endwith %}
-				{% endif %}
+      			{% for post in search_result_list_author %}
+          			{% block post-list-view3 %}{% endblock %}
+      			{% endfor %}
+				{% with page_obj=pgn_srl_author current_page=search_result_list_author page="page_author" %}
+					{% block paginator3 %}{% endblock %}
+				{% endwith %}
+			{% endif %}
 	    </div>
 	    </div>
 	  </div>
