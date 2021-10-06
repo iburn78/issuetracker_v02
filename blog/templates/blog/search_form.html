@@ -41,7 +41,7 @@
 
 	{% for num in page_obj.page_range %}
         {% if current_page.number == num %}
-			<a class="btn btn-sm btn-info mb-4" href="?search_term={{search_term}}&{{page}}={{ num }}">{{ num }}</a>
+			<p class="btn btn-sm btn-info mb-4">{{ num }}</p>
 		{% elif num > current_page.number|add:'-3' and num < current_page.number|add:'3' %}
 			<a class="btn btn-sm btn-outline-info mb-4" href="?search_term={{search_term}}&{{page}}={{ num }}">{{ num }}</a>
 		{% endif %}

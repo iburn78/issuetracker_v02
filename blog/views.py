@@ -469,50 +469,52 @@ class SearchFormView(FormView):
         page_tag = request.GET.get('page_tag')
         page_author = request.GET.get('page_author')
         if page == None:
-            page = int(request.session.get("page"))
+            if request.session.get("page") == None:
+                page = 1
+            else:
+                page = request.session.get("page")
         if page_tag == None:
-            page_tag = int(request.session.get("page_tag"))
+            if request.session.get("page_tag") == None:
+                page_tag = 1
+            else:
+                page_tag = request.session.get("page_tag")
         if page_author == None:
-            page_author = int(request.session.get("page_author"))
+            if request.session.get("page_author") == None:
+                page_author = 1
+            else:
+                page_author = request.session.get("page_author")
         try:
             page = int(page)
             page_tag = int(page_tag)
             page_author = int(page_author)
         except:
-            print("search error - page number should be integers")
+            print("**** search error - page number should be integers")
             raise
         request.session["page"] = page
         request.session["page_tag"] = page_tag
         request.session["page_author"] = page_author
         return page, page_tag, page_author
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, db=Post, **kwargs):
         search_term = str(request.GET.get('search_term'))
         context = self.get_context_data()
         if search_term == 'None' or search_term == '':
-            request.session["page"] = 1
-            request.session["page_tag"] = 1
-            request.session["page_author"] = 1
             return render(self.request, self.template_name, context)
         else:
             p, t, a = self.page_session(request)
             context = {
-                **context, **self.search_db(Post, search_term, p, t, a)}
+                **context, **self.search_db(db, search_term, p, t, a)}
             return render(self.request, self.template_name, context)
 
-    def form_valid(self, form):
-        self.request.session["page"] = 1
-        self.request.session["page_tag"] = 1
-        self.request.session["page_author"] = 1
+    def form_valid(self, form, db=Post):
         search_term = str(self.request.POST['search_term'])
         context = self.get_context_data()
-        context = {**context, **self.search_db(Post, search_term)}
+        context = {**context, **self.search_db(db, search_term)}
         return render(self.request, self.template_name, context)
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, db=Post, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['level'] = Post.level
-        context['search_requested'] = False
+        context['level'] = db.level
         return context
 
 
@@ -520,28 +522,10 @@ class PrivateSearchFormView(LoginRequiredMixin, SearchFormView):
     form_class = PrivatePostSearchForm
 
     def get(self, request, *args, **kwargs):
-        search_term = str(request.GET.get('search_term'))
-        context = self.get_context_data()
-        p, t, a = self.page_session(request)
-        if search_term == 'None' or search_term == '':
-            request.session["page"] = 1
-            request.session["page_tag"] = 1
-            request.session["page_author"] = 1
-            return render(self.request, self.template_name, context)
-        else:
-            context = {
-                **context, **self.search_db(PrivatePost, search_term, p, t)}
-            return render(self.request, self.template_name, context)
+        return super().get(request, *args, db=PrivatePost, **kwargs)
 
     def form_valid(self, form):
-        self.request.session["page"] = 1
-        self.request.session["page_tag"] = 1
-        search_term = str(self.request.POST['search_term'])
-        context = self.get_context_data()
-        context = {**context, **self.search_db(PrivatePost, search_term)}
-        return render(self.request, self.template_name, context)
+        return super().form_valid(form, db=PrivatePost)
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['level'] = PrivatePost.level
-        return context
+        return super().get_context_data(db=PrivatePost, **kwargs)
