@@ -1,42 +1,61 @@
 {% extends "blog/base.html" %}
+{% load crispy_forms_tags %}
 {% block content %}
 <div class="container">
-    {% if level == 'private' %}
-	<div class="alert alert-primary" role="alert">private tags</div>
-        {% for tag in tags %}
-        	<div class="list_indent">
-                <a class="mr-2" href="{% url 'tag-privatepost-list' tag.id user %}">{{ tag.name }}</a> - {{ article_count|get_item:tag.name }} articles 
-            </div> 
-    		 
-        {% endfor %}
-    {% else %}
-        {% for tag in tags %} 
-        	<div class="list_indent">
-                <a class="mr-2" href="{% url 'tag-post-list' tag.id %}">{{ tag.name }}</a> - {{ article_count|get_item:tag.name }} articles {{ author_count|get_item:tag.name }} authors 
-    		</div> 
-        {% endfor %}
-    {% endif %}
-    <br>
-	{% if is_paginated %}
-        {% if page_obj.has_previous %}
-	        <a class="btn btn-outline-info mb-4" href="?page=1">first</a>
-			<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">prev</a>
-	    {% endif %}
+	<form method="POST" enctype="multipart/form-data" autocomplete="off">
+	    {% csrf_token %}
+	    <fieldset class ="form-group">
+				{{ form | crispy }}
+	    </fieldset>
+	    <div class="from-group">
+				<button class="btn btn-info" type="submit">search</button>
+				{% if level == "private" %}
+					<a href={% url 'privatesearch-form' %} class="btn btn-outline-info float-right" role="button">clear</a>
+				{% else %}
+					<a href={% url 'search-form' %} class="btn btn-outline-info float-right" role="button">clear</a>
+				{% endif %}
+	    </div>
+	</form>
+	<br>
 
-	    {% for num in page_obj.paginator.page_range %}
-            {% if page_obj.number == num %}
-		    	<a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+  {% if level == 'private' %}
+		<div class="alert alert-primary" role="alert">private tags</div>
+    {% for tag in tags %}
+     	<div class="list_indent">
+        <a class="mr-2" href="{% url 'tag-privatepost-list' tag.id user %}">{{ tag.name }}</a> - {{ article_count|get_item:tag.name }} articles 
+      </div> 
+    {% endfor %}
+  {% else %}
+    {% for tag in tags %} 
+     	<div class="list_indent">
+        <a class="mr-2" href="{% url 'tag-post-list' tag.id %}">{{ tag.name }}</a> - {{ article_count|get_item:tag.name }} articles {{ author_count|get_item:tag.name }} authors 
+    	</div> 
+    {% endfor %}
+  {% endif %}
+  <br>
+
+	{% if is_paginated %}
+	<div class="float-right">
+    {% if page_obj.has_previous %}
+	    <a class="btn btn-sm btn-outline-info mb-4" href="?page=1">first</a>
+			<a class="btn btn-sm btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">prev</a>
+	  {% endif %}
+
+	  {% for num in page_obj.paginator.page_range %}
+      {% if page_obj.number == num %}
+		  	<a class="btn btn-sm btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
 			{% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-	            <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+	      <a class="btn btn-sm btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
 			{% endif %}
 		{% endfor %}
 
-        {% if page_obj.has_next %}
-	        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">next</a>
-		 	<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">last</a>
-	    {% endif %}
+    {% if page_obj.has_next %}
+	    <a class="btn btn-sm btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">next</a>
+		 	<a class="btn btn-sm btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">last</a>
+	  {% endif %}
+	</div>
 	{% endif %}
-    <br/>
+  <br/>
 </div>
 {% endblock content %}
 

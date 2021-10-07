@@ -6,9 +6,6 @@ class PostSearchForm(forms.Form):
 class PrivatePostSearchForm(forms.Form):
     search_term = forms.CharField(label = "search word (private posts)")
 
-class MiloSearchForm(forms.Form):
-    search_term = forms.CharField(label = "search word")
-
 class TagSearchForm(forms.Form):
     search_term = forms.CharField(label = "search tags")
 

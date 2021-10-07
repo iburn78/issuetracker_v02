@@ -6,13 +6,13 @@ from django.views.generic import (
     DetailView,
     CreateView,
     UpdateView,
-    DeleteView
+    DeleteView,
 )
 from django.http import HttpResponse
 from blog.models import PostRoot, Post, PrivatePost
 from taggit.models import Tag
-from django.views.generic.edit import FormView
-from blog.forms import MiloSearchForm, PostSearchForm, PrivatePostSearchForm
+from django.views.generic.edit import FormMixin, FormView
+from blog.forms import PostSearchForm, PrivatePostSearchForm, TagSearchForm, AuthorSearchForm
 from django.db.models import Q
 from django.template.defaulttags import register
 from django.urls import reverse
@@ -344,24 +344,8 @@ def about(request):
     return render(request, 'blog/about.html')
 
 
-def dashboard_view(request):
-    return render(request, 'blog/web_stats.html')
-
-
 def milo(request):
-    if request.method == "POST":
-        form = MiloSearchForm(request.POST)
-        if form.is_valid():
-            key_word = form.cleaned_data
-        else:
-            key_word = request.POST
-    else:
-        key_word = "form is not submited (or not POST)"
-    return render(request, 'blog/milo_test.html', {'milo_key_word': key_word})
-
-
-def milo_twocol(request):
-    return render(request, 'blog/home-twocolumn.html')
+    return render(request, 'blog/milo_test.html')
 
 
 class SearchFormView(FormView):
@@ -503,11 +487,23 @@ class AuthorListView(ListView):
         return context
 
 
-class TagListView(ListView):
-    model = Tag
+class TagListView(FormMixin, ListView):
+    form_class = TagSearchForm
     template_name = 'blog/tag_list.html'
-    paginate_by = 30
+    # model = Tag 
+    paginate_by = 10
     context_object_name = 'tags'
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        self.form_valid(form)
+
+    def form_valid(self, form):
+        search_term = str(self.request.POST['search_term'])
+        context = self.get_context_data()
+        context['search_result_list_tag'] = Post.objects.filter(tags__name__icontains=search_term).distinct()
+        print(context['search_result_list_tag'])
+        return render(self.request, self.template_name, context)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

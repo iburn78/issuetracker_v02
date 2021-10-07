@@ -1,37 +1,10 @@
 from django.urls import path
 
-from blog.views import (
-        AuthorListView,
-        TagListView,
-        PrivateTagListView, 
-        PostListView, 
-        PostDetailView, 
-        PostCreateView,
-        PostUpdateView,
-        PostDeleteView, 
-        UserPostListView, 
-        TaggedPostListView, 
-        PostCompactListView,
-        PostCompact_UserListView,
-        PostCompact_TagListView,
-        SearchFormView,
-        PrivatePostListView, 
-        PrivatePostDetailView, 
-        PrivatePostCreateView,
-        PrivatePostUpdateView,
-        PrivatePostDeleteView, 
-        TaggedPrivatePostListView, 
-        PrivatePostCompactListView,
-        PrivatePostCompact_TagListView,
-        PrivateSearchFormView,
-        )
-
+from blog.views import * 
 from blog import views
 
 urlpatterns = [
     path('milo/', views.milo, name='milo-test'), 
-    path('milo_twocol/', views.milo_twocol, name='milo-twocol'), 
-
     path('', PostListView.as_view(), name='blog-home'), 
     path('authors/', AuthorListView.as_view(), name='author-list'), 
     path('tags/', TagListView.as_view(), name='tag-list'), 
@@ -54,7 +27,31 @@ urlpatterns = [
     path('user_list/<str:username>/', PostCompact_UserListView.as_view(), name='user-post-list'), 
     path('tag_list/<int:pk>/', PostCompact_TagListView.as_view(), name='tag-post-list'), 
     path('tag_list/<int:pk>/private/<str:username>', PrivatePostCompact_TagListView.as_view(), name='tag-privatepost-list'), 
-    path('dashboard/', views.dashboard_view, name='website-stats'),
     path('search/', SearchFormView.as_view(), name='search-form'),
     path('search/private/', PrivateSearchFormView.as_view(), name='privatesearch-form'),
 ] 
+
+        # (AuthorListView,
+        # TagListView,
+        # PrivateTagListView, 
+        # PostListView, 
+        # PostDetailView, 
+        # PostCreateView,
+        # PostUpdateView,
+        # PostDeleteView, 
+        # UserPostListView, 
+        # TaggedPostListView, 
+        # PostCompactListView,
+        # PostCompact_UserListView,
+        # PostCompact_TagListView,
+        # SearchFormView,
+        # PrivatePostListView, 
+        # PrivatePostDetailView, 
+        # PrivatePostCreateView,
+        # PrivatePostUpdateView,
+        # PrivatePostDeleteView, 
+        # TaggedPrivatePostListView, 
+        # PrivatePostCompactListView,
+        # PrivatePostCompact_TagListView,
+        # PrivateSearchFormView,
+        # )
