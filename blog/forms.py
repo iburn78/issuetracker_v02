@@ -8,3 +8,9 @@ class PrivatePostSearchForm(forms.Form):
 
 class MiloSearchForm(forms.Form):
     search_term = forms.CharField(label = "search word")
+
+class TagSearchForm(forms.Form):
+    search_term = forms.CharField(label = "search tags")
+
+class AuthorSearchForm(forms.Form):
+    search_term = forms.CharField(label = "search author")

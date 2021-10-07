@@ -25,70 +25,6 @@ def get_item(dictionary, key):
     return dictionary.get(key)
 
 
-class AuthorListView(ListView):
-    model = User
-    template_name = 'blog/author_list.html'
-    paginate_by = 50
-    context_object_name = 'authors'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-
-
-class TagListView(ListView):
-    model = Tag
-    template_name = 'blog/tag_list.html'
-    paginate_by = 70
-    context_object_name = 'tags'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        tag_articles = {}
-        tag_authors = {}
-        for tag in Post.tags.order_by('name'):
-            tag_articles[tag.name] = Post.objects.filter(tags=tag.id).count()
-            tag_authors[tag.name] = User.objects.filter(
-                post__tags=tag.id).distinct().count()
-        context['article_count'] = tag_articles
-        context['author_count'] = tag_authors
-        context['level'] = Post.level
-
-        return context
-
-    def get_queryset(self):
-        return Post.tags.order_by('name')
-
-
-class PrivateTagListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
-    model = Tag
-    template_name = 'blog/tag_list.html'
-    paginate_by = 70
-    context_object_name = 'tags'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = get_object_or_404(User, username=self.kwargs.get('username'))
-        tag_articles = {}
-        for tag in PrivatePost.tags.filter(privatepost__author=user).order_by('name'):
-            tag_articles[tag.name] = PrivatePost.objects.filter(
-                tags=tag.id, author=user).count()
-        context['article_count'] = tag_articles
-        context['level'] = PrivatePost.level
-
-        return context
-
-    def get_queryset(self):
-        user = get_object_or_404(User, username=self.kwargs.get('username'))
-        return PrivatePost.tags.filter(privatepost__author=user).order_by('name')
-
-    def test_func(self):
-        if str(self.request.user) == self.kwargs.get('username'):
-            return True
-        return False
-
-
 class PostListView(ListView):
     model = Post
     template_name = 'blog/home.html'  # <app>/<model>_<viewtype>.html
@@ -553,3 +489,68 @@ class PrivateSearchFormView(LoginRequiredMixin, SearchFormView):
 
     def get_context_data(self, **kwargs):
         return super().get_context_data(db=PrivatePost, **kwargs)
+
+
+
+class AuthorListView(ListView):
+    model = User
+    template_name = 'blog/author_list.html'
+    paginate_by = 30
+    context_object_name = 'authors'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class TagListView(ListView):
+    model = Tag
+    template_name = 'blog/tag_list.html'
+    paginate_by = 30
+    context_object_name = 'tags'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        tag_articles = {}
+        tag_authors = {}
+        for tag in Post.tags.order_by('name'):
+            tag_articles[tag.name] = Post.objects.filter(tags=tag.id).count()
+            tag_authors[tag.name] = User.objects.filter(
+                post__tags=tag.id).distinct().count()
+        context['article_count'] = tag_articles
+        context['author_count'] = tag_authors
+        context['level'] = Post.level
+
+        return context
+
+    def get_queryset(self):
+        return Post.tags.order_by('name')
+
+
+class PrivateTagListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    model = Tag
+    template_name = 'blog/tag_list.html'
+    paginate_by = 30
+    context_object_name = 'tags'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        tag_articles = {}
+        for tag in PrivatePost.tags.filter(privatepost__author=user).order_by('name'):
+            tag_articles[tag.name] = PrivatePost.objects.filter(
+                tags=tag.id, author=user).count()
+        context['article_count'] = tag_articles
+        context['level'] = PrivatePost.level
+
+        return context
+
+    def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        return PrivatePost.tags.filter(privatepost__author=user).order_by('name')
+
+    def test_func(self):
+        if str(self.request.user) == self.kwargs.get('username'):
+            return True
+        return False

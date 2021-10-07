@@ -28,7 +28,7 @@
     			{% if search_result_list %}
     				<div class="ml-2"><b>{{ pgn_srl.count }} post{% if pgn_srl.count > 1 %}s{% endif %} with "{{search_term}}" in title and content... </b></div>
     			{% elif search_term %}
-    				<div style="color:#808080" class="ml-2"><i> search word "{{ search_term }}" not found in title and content </i></div>
+    				<div style="color:#808080" class="ml-2"><i>"{{ search_term }}" not found in title and content </i></div>
     			{% endif %}
 	        </button>
 	      </h2>
@@ -64,7 +64,7 @@
     			{% if search_result_list_tag %}
     				<div class="ml-2"><b>{{ pgn_srl_tag.count }} post{% if pgn_srl_tag.count > 1 %}s{% endif %} with "{{search_term}}" in tags... </b></div>
     			{% elif search_term %}
-    				<div style="color:#808080" class="ml-2"><i> search word "{{ search_term }}" not found in tags</i></div>
+    				<div style="color:#808080" class="ml-2"><i>"{{ search_term }}" not found in tags</i></div>
     			{% endif %}
 	        </button>
 	      </h2>
@@ -97,7 +97,7 @@
     		{% if search_result_list_author %}
     			<div class="ml-2"><b>{{ pgn_srl_author.count }} post{% if pgn_srl_author.count > 1 %}s{% endif %} with "{{search_term}}" in author name... </b></div>
 	    	{% elif search_term %}
-    			<div style="color:#808080" class="ml-2"><i> search word "{{ search_term }}" not found in authors</i></div>
+    			<div style="color:#808080" class="ml-2"><i>"{{ search_term }}" not found in authors</i></div>
 	    	{% endif %}
 	      </button>
 	    </h2>
