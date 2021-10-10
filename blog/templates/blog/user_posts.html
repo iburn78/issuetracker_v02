@@ -31,12 +31,11 @@
 		<p align = 'right'><small class="text-muted">-- issuetracker post</small></p>
 	{% endfor %}
 	<a class="btn btn-primary btn-sm mt-1 mb-1 float-right" href="{% url 'post-compact-list' %}">list</a>
-	<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'blog-home' %}">post</a><br/><br/>
+	<a class="btn btn-primary btn-sm mt-1 mb-1 mr-1 float-right" href="{% url 'blog-home' %}">post</a><br><br>
 
 	{% if is_paginated %}
         {% if page_obj.has_previous %}
 	        <a class="btn btn-outline-info mb-4" href="?page=1">first</a>
-		 	<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">prev</a>
 	    {% endif %}
 
 	    {% for num in page_obj.paginator.page_range %}
@@ -48,7 +47,6 @@
 	    {% endfor %}
 
         {% if page_obj.has_next %}
-	        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">next</a>
 		 	<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">last</a>
 	    {% endif %}
 	{% endif %}

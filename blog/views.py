@@ -18,7 +18,7 @@ from django.template.defaulttags import register
 from django.urls import reverse
 from bs4 import BeautifulSoup
 from django.core.paginator import Paginator
-
+from django.contrib import messages
 
 @register.filter
 def get_item(dictionary, key):
@@ -351,7 +351,7 @@ def milo(request):
 class SearchFormView(FormView):
     form_class = PostSearchForm
     template_name = 'blog/search_form.html'
-    page_by = 15
+    page_by = 10
 
     def search_db(self, db, search_term, page=1, page_tag=1, page_author=1):
         context = {}
@@ -476,75 +476,148 @@ class PrivateSearchFormView(LoginRequiredMixin, SearchFormView):
 
 
 
-class AuthorListView(ListView):
-    model = User
+class AuthorListView(FormMixin, ListView):
+    form_class = AuthorSearchForm
     template_name = 'blog/author_list.html'
-    paginate_by = 30
+    paginate_by = 15
     context_object_name = 'authors'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid(): 
+            search_term = form.cleaned_data.get("search_term")
+            return self.form_valid(search_term, **kwargs)
+        else:
+            messages.info(request, "Enter search word for authors")
+            return redirect("author-list")
+
+    def form_valid(self, search_term, **kwargs):
+        context = self.get_context_data(**kwargs)
+        context['author_search_res'] = User.objects.filter(username__icontains=search_term).distinct().order_by('username')
+        context['search_term'] = search_term
+        context['search_requested'] = True
+        return render(self.request, self.template_name, context)
+
+    def get(self, request, *args, **kwargs):
+        order = request.GET.get("order")
+        if order == None: order = 'mp'
+        context = self.get_context_data(order = order, **kwargs)
+        return render(self.request, self.template_name, context)
+
+    def get_context_data(self, order ='mp', **kwargs):
+        context = {}
+        user_table = []   # username, id, number_posts, last_post(most recent), last_login, is_active
+        user_list = User.objects.all().order_by('username')
+        for user in user_list:
+            number_posts = user.post_set.count()
+            last_post = Post.objects.filter(author=user.id).order_by('-date_posted').first()
+            if last_post != None: 
+                last_post = last_post.date_posted
+            user_table.append([user.username, user.id, number_posts, last_post, user.last_login, user.is_active])
+        user_table_sort = [user for user in user_table if user[5] and user[2] > 0]  
+        if order == 'mp': # most posts
+            user_table_sort = sorted(user_table_sort, key=lambda a:-a[2])
+        elif order == 'mr': # most recent
+            user_table_sort = sorted(user_table_sort, key=lambda a:a[3], reverse=True)
+        elif order == 'll': 
+            user_table_sort = sorted(user_table_sort, key=lambda a:a[4], reverse=True)
+        else:
+            order = 'alp'
+        context['form'] = self.get_form()
+        context['order'] = order
+        context['noposts'] = [user for user in user_table if user[5] and user[2] == 0]  
+        context['inactives'] = [user for user in user_table if not user[5]]  
+        self.object_list = user_table_sort
+        context = {**context, **super().get_context_data(**kwargs)} # should do this last for pagination to work
         return context
 
 
 class TagListView(FormMixin, ListView):
     form_class = TagSearchForm
     template_name = 'blog/tag_list.html'
-    # model = Tag 
-    paginate_by = 10
+    paginate_by = 15
     context_object_name = 'tags'
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
-        self.form_valid(form)
+        if form.is_valid(): 
+            search_term = form.cleaned_data.get("search_term")
+            return self.form_valid(search_term, **kwargs)
+        else:
+            messages.info(request, "Enter search word for tags")
+            return redirect("tag-list")
 
-    def form_valid(self, form):
-        search_term = str(self.request.POST['search_term'])
-        context = self.get_context_data()
-        context['search_result_list_tag'] = Post.objects.filter(tags__name__icontains=search_term).distinct()
-        print(context['search_result_list_tag'])
+    def form_valid(self, search_term, **kwargs):
+        context = self.get_context_data_(**kwargs)
+        context['tag_search_res'] = Post.tags.filter(name__icontains=search_term).distinct()
+        context['search_term'] = search_term
+        context['search_requested'] = True
         return render(self.request, self.template_name, context)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get(self, request, *args, **kwargs):
+        order = request.GET.get("order")
+        if order == None: order = 'mp'
+        context = self.get_context_data_(order = order, **kwargs)
+        return render(self.request, self.template_name, context)
 
-        tag_articles = {}
-        tag_authors = {}
-        for tag in Post.tags.order_by('name'):
-            tag_articles[tag.name] = Post.objects.filter(tags=tag.id).count()
-            tag_authors[tag.name] = User.objects.filter(
-                post__tags=tag.id).distinct().count()
-        context['article_count'] = tag_articles
-        context['author_count'] = tag_authors
-        context['level'] = Post.level
-
+    def get_context_data_(self, order ='mp', **kwargs):
+        db=Post
+        context = {}
+        tag_table = []   # tag_name, id, number_posts, number_authors
+        tag_list = db.tags.order_by('name')
+        for tag in tag_list:
+            tag_articles = db.objects.filter(tags=tag.id).count()
+            last_used = db.objects.filter(tags=tag.id).distinct().order_by('-date_posted').first().date_posted
+            tag_authors = User.objects.filter(post__tags=tag.id).distinct().count()
+            tag_table.append([tag.name, tag.id, tag_articles, tag_authors, last_used])
+        if order == 'mp':
+            tag_table = sorted(tag_table, key=lambda a:-a[2])
+        elif order == 'ma': 
+            tag_table = sorted(tag_table, key=lambda a:-a[3])
+        elif order == 'mr': 
+            tag_table = sorted(tag_table, key=lambda a:a[4], reverse=True)
+        else: 
+            order = 'alp'
+        context['level'] = db.level
+        context['form'] = self.get_form()
+        context['order'] = order
+        self.object_list = tag_table 
+        context = {**context, **super().get_context_data(**kwargs)} # should do this last for pagination to work 
         return context
 
-    def get_queryset(self):
-        return Post.tags.order_by('name')
 
+class PrivateTagListView(LoginRequiredMixin, UserPassesTestMixin, TagListView):
 
-class PrivateTagListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
-    model = Tag
-    template_name = 'blog/tag_list.html'
-    paginate_by = 30
-    context_object_name = 'tags'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def form_valid(self, search_term, **kwargs):
+        context = self.get_context_data_(**kwargs)
         user = get_object_or_404(User, username=self.kwargs.get('username'))
-        tag_articles = {}
-        for tag in PrivatePost.tags.filter(privatepost__author=user).order_by('name'):
-            tag_articles[tag.name] = PrivatePost.objects.filter(
-                tags=tag.id, author=user).count()
-        context['article_count'] = tag_articles
-        context['level'] = PrivatePost.level
+        context['tag_search_res'] = PrivatePost.tags.filter(Q(privatepost__author=user) & Q(name__icontains=search_term)).distinct()
+        context['search_term'] = search_term
+        context['search_requested'] = True
+        return render(self.request, self.template_name, context)
 
+    def get_context_data_(self, order ='mp', **kwargs):
+        db=PrivatePost
+        context = {}
+        tag_table = []   # tag_name, id, number_posts 
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        tag_list = db.tags.filter(privatepost__author=user).order_by('name')
+        for tag in tag_list:
+            tag_articles = db.objects.filter(author=user).filter(tags=tag.id).count()
+            last_used = db.objects.filter(author=user).filter(tags=tag.id).distinct().order_by('-date_posted').first().date_posted
+            tag_table.append([tag.name, tag.id, tag_articles, last_used])
+        if order == 'mp':
+            tag_table = sorted(tag_table, key=lambda a:-a[2])
+        elif order == 'mr': 
+            tag_table = sorted(tag_table, key=lambda a:a[3], reverse=True)
+        else:
+            order = "alp"
+        context['level'] = db.level
+        context['form'] = self.get_form()
+        context['order'] = order
+        self.object_list = tag_table 
+        context = {**context, **super().get_context_data(**kwargs)} # should do this last for pagination to work
         return context
-
-    def get_queryset(self):
-        user = get_object_or_404(User, username=self.kwargs.get('username'))
-        return PrivatePost.tags.filter(privatepost__author=user).order_by('name')
 
     def test_func(self):
         if str(self.request.user) == self.kwargs.get('username'):

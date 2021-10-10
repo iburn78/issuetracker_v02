@@ -32,7 +32,7 @@
 				<a href="{% url 'tag-privatepost-list' tag.id user %}" class="mr-1 mt-1">#{{ tag }}</a>
             {% endfor %}
             <small class="text-muted"> {{ post.date_posted|date:"M d, Y H:m" }}</small>
-            <br/>
+            <br>
         {% else %}
             <a class="mr-2" href="{% url 'user-post-list' post.author.username %}">{{ post.author }}</a>
 	    	<a class="article-title mt-2 mb-2 mr-3" href="{% url 'post-detail' post.id %}">{{ post.get_preview_title }}</a>
@@ -40,7 +40,7 @@
 				<a href="{% url 'tag-post-list' tag.id %}" class="mr-1 mt-1">#{{ tag }}</a>
             {% endfor %}
             <small class="text-muted"> {{ post.date_posted|date:"M d, Y H:m" }}</small>
-            <br/>
+            <br>
 	    {% endif %}
 		</div> 
     {% endfor %}
@@ -57,7 +57,6 @@
 	{% if is_paginated %}
         {% if page_obj.has_previous %}
 	        <a class="btn btn-outline-info mb-4" href="?page=1">first</a>
-			<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">prev</a>
 	    {% endif %}
 
 	    {% for num in page_obj.paginator.page_range %}
@@ -69,9 +68,8 @@
 		{% endfor %}
 
         {% if page_obj.has_next %}
-	        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">next</a>
 		 	<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">last</a>
 	    {% endif %}
 	{% endif %}
-    <br/>
+    <br>
 {% endblock content %}

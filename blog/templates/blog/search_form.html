@@ -9,7 +9,7 @@
     		<a href="{% url 'tag-post-list' tag.id %}" class="mr-1 mt-1">#{{ tag }}</a>
         {% endfor %}
         <small class="text-muted"> {{ post.date_posted|date:"M d, Y H:m" }}</small>
-        <br/>
+        <br>
     </div> 
 {% endblock %}
 {% endblock %}
@@ -24,7 +24,7 @@
     		<a href="{% url 'tag-privatepost-list' tag.id user %}" class="mr-1 mt-1">#{{ tag }}</a>
         {% endfor %}
         <small class="text-muted"> {{ post.date_posted|date:"M d, Y H:m" }}</small>
-        <br/>
+        <br>
     </div> 
 {% endblock %}
 {% endblock %}
@@ -36,7 +36,6 @@
 <div class="float-right">
     {% if current_page.has_previous %}
 	    <a class="btn btn-sm btn-outline-info mb-4" href="?search_term={{search_term}}&{{page}}=1">first</a>
-		<a class="btn btn-sm btn-outline-info mb-4" href="?search_term={{search_term}}&{{page}}={{ current_page.previous_page_number }}">prev</a>
 	{% endif %}
 
 	{% for num in page_obj.page_range %}
@@ -48,11 +47,10 @@
 	{% endfor %}
 
 	{% if current_page.has_next %}
-		<a class="btn btn-sm btn-outline-info mb-4" href="?search_term={{search_term}}&{{page}}={{ current_page.next_page_number }}">next</a>
 		<a class="btn btn-sm btn-outline-info mb-4" href="?search_term={{search_term}}&{{page}}={{ page_obj.num_pages }}">last</a>
 	{% endif %}
 </div>
-</br>
+<br>
 {% endif %}
 {% endblock %}
 {% endblock %}

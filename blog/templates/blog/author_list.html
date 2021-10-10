@@ -1,39 +1,82 @@
 {% extends "blog/base.html" %}
+{% load crispy_forms_tags %}
 {% block content %}
+<div class="container">
+	<form method="POST" enctype="multipart/form-data" autocomplete="off">
+	    {% csrf_token %}
+	    <fieldset class ="form-group">
+				{{ form | crispy }}
+	    </fieldset>
+	    <div class="from-group">
+				<button class="btn btn-info" type="submit">search</button>
+				<a href={% url 'author-list' %} class="btn btn-outline-info float-right" role="button">clear</a>
+	    </div>
+	</form>
+	<br>
+
+    {% if author_search_res and search_requested %}
+	    authors that contain "<b>{{ search_term }}</b>":
+	    <div class="list_indent">
+        {% for author in author_search_res %}
+            <a class="mr-2" href="{% url 'user-post-list' author.username %}">{{ author.username }}</a> 
+        {% endfor %}
+        </div> 
+	    <br>
+    {% elif search_requested %}
+	    <i style="color:#808080">no authors with "{{ search_term }}"</i>
+	    <br>
+	    <br>
+    {% endif %}
+
+  {% if order == 'mp' %}
+  	<p>authors <a style='color:black' href="?order=mp"><b>most posts</b></a> || <a style='color:gray' href="?order=mr">recent post</a> || <a style='color:gray' href="?order=ll">last login</a> || <a style='color:gray' href="?order=alp">alphabitcal</a></p>
+  {% elif order == 'mr' %}
+  	<p>authors <a style='color:gray' href="?order=mp">most posts</a> || <a style='color:black' href="?order=mr"><b>recent post</b></a> || <a style='color:gray' href="?order=ll">last login</a> || <a style='color:gray' href="?order=alp">alphabitcal</a></p>
+  {% elif order == 'll' %}
+  	<p>authors <a style='color:gray' href="?order=mp">most posts</a> || <a style='color:gray' href="?order=mr">recent post</a> || <a style='color:black' href="?order=ll"><b>last login</b></a> || <a style='color:gray' href="?order=alp">alphabitcal</a></p>
+  {% else %}
+  	<p>authors <a style='color:gray' href="?order=mp">most posts</a> || <a style='color:gray' href="?order=mr">recent post</a> || <a style='color:gray' href="?order=ll">last login</a> || <a style='color:black' href="?order=alp"><b>alphabitcal</b></a></p>
+  {% endif %}
     {% for author in authors %}
-        {% if author.is_active %}
     	<div class="list_indent">
-            <a class="mr-2" href="{% url 'user-post-list' author.username %}">{{ author.username }}</a> - {{ author.post_set.count }} posts{% if author.profile.last_login != None %}, last login {{ author.profile.last_login }} {% endif %}
-            <br/>
+            <a class="mr-2" href="{% url 'user-post-list' author.0 %}">{{ author.0 }}</a> - {{ author.2 }} posts 
+            {% if author.3 != None %}<small class="text-muted">recent post <b>{{ author.3|date:"y M d H:m" }}</b></small>{% endif %}
+            {% if author.4 != None %}<small class="text-muted">last login <b>{{ author.4|date:"y M d H:m" }}</b></small>{% endif %}
+            <br>
 		</div> 
-       {% endif %} 
     {% endfor %}
-    <br/>
-    {% for author in authors %}
-            {% if author.is_active == False %}
-    	<div class="list_indent">
-            <a class="mr-2" href="{% url 'user-post-list' author.username %}">{{ author.username }} (inactive)</a>
-		</div> 
-            {% endif %}
-    {% endfor %}
+    <br>
 	{% if is_paginated %}
+	<div class="float-right">
         {% if page_obj.has_previous %}
-	        <a class="btn btn-outline-info mb-4" href="?page=1">first</a>
-			<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">prev</a>
+	        <a class="btn btn-sm btn-outline-info mb-4" href="?page=1&order={{ order }}">first</a>
 	    {% endif %}
 
 	    {% for num in page_obj.paginator.page_range %}
             {% if page_obj.number == num %}
-		    	<a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+		    	<a class="btn btn-sm btn-info mb-4" href="?page={{ num }}&order={{ order }}">{{ num }}</a>
 			{% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-	            <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+	            <a class="btn btn-sm btn-outline-info mb-4" href="?page={{ num }}&order={{ order }}">{{ num }}</a>
 			{% endif %}
 		{% endfor %}
 
         {% if page_obj.has_next %}
-	        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">next</a>
-		 	<a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">last</a>
+		 	<a class="btn btn-sm btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}&order={{ order }}">last</a>
 	    {% endif %}
+    </div>
 	{% endif %}
-    <br/>
+    <br>
+    <br>
+    <div class="small" style="color:gray">
+    authors with no posts:
+    {% for author in noposts %}
+            <a class="mr-2" style="color:gray" href="{% url 'user-post-list' author.0 %}">{{ author.0 }}</a>
+    {% endfor %}
+    <br>
+    inactive authors:
+    {% for author in inactives %}
+            <a class="mr-2" style="color:gray" href="{% url 'user-post-list' author.0 %}">{{ author.0 }}</a>
+    {% endfor %}
+    </div>
+</div>
 {% endblock content %}

@@ -2,6 +2,9 @@
 {% load crispy_forms_tags %}
 {% block content %}
 <div class="container">
+  {% if level == 'private' %}
+	<div class="alert alert-primary" role="alert">private tags</div>
+  {% endif %}
 	<form method="POST" enctype="multipart/form-data" autocomplete="off">
 	    {% csrf_token %}
 	    <fieldset class ="form-group">
@@ -10,25 +13,61 @@
 	    <div class="from-group">
 				<button class="btn btn-info" type="submit">search</button>
 				{% if level == "private" %}
-					<a href={% url 'privatesearch-form' %} class="btn btn-outline-info float-right" role="button">clear</a>
+					<a href={% url 'privatetag-list' user %} class="btn btn-outline-info float-right" role="button">clear</a>
 				{% else %}
-					<a href={% url 'search-form' %} class="btn btn-outline-info float-right" role="button">clear</a>
+					<a href={% url 'tag-list' %} class="btn btn-outline-info float-right" role="button">clear</a>
 				{% endif %}
 	    </div>
 	</form>
 	<br>
-
+  {% if tag_search_res and search_requested %}
+	tags that contain "<b>{{ search_term }}</b>":
   {% if level == 'private' %}
-		<div class="alert alert-primary" role="alert">private tags</div>
+    <div class="list_indent">
+	    {% for tag in tag_search_res %}
+  	      <a class="mr-2" href="{% url 'tag-privatepost-list' tag.id user %}">#{{ tag.name }}</a>
+		{% endfor %}
+	</div> 
+  {% else %}
+  	<div class="list_indent">
+    	{% for tag in tag_search_res %}
+          <a class="mr-2" href="{% url 'tag-post-list' tag.id %}">#{{ tag.name }}</a>
+		{% endfor %}
+	</div> 
+  {% endif %}
+	<br>
+  {% elif search_requested %}
+	<i style="color:#808080">no tags with "{{ search_term }}"</i>
+	<br>
+	<br>
+  {% endif %}
+	
+  {% if level == 'private' %}
+  {% if order == 'mp' %}
+  	<p>tags <a style='color:black' href="?order=mp"><b>most posts</b></a> || <a style='color:gray' href="?order=mr">recent</a> || <a style='color:gray' href="?order=alp">alphabitcal</a></p>
+  {% elif order == 'mr' %}
+  	<p>tags <a style='color:gray' href="?order=mp">most posts</a> || <a style='color:black' href="?order=mr"><b>recent</b></a> || <a style='color:gray' href="?order=alp">alphabitcal</a></p> 
+  {% else %}
+  	<p>tags <a style='color:gray' href="?order=mp">most posts</a> || <a style='color:gray' href="?order=mr">recent</a> || <a style='color:black' href="?order=alp"><b>alphabitcal</b></a></p>
+  {% endif %}
     {% for tag in tags %}
-     	<div class="list_indent">
-        <a class="mr-2" href="{% url 'tag-privatepost-list' tag.id user %}">{{ tag.name }}</a> - {{ article_count|get_item:tag.name }} articles 
+	  <div class="list_indent">
+        <a class="mr-2" href="{% url 'tag-privatepost-list' tag.1 user %}">{{ tag.0 }}</a> - {{ tag.2 }} articles <small class="text-muted">{{ tag.3|date:"y M d H:m" }}</small>
       </div> 
     {% endfor %}
   {% else %}
+  {% if order == 'mp' %}
+  	<p>tags <a style='color:black' href="?order=mp"><b>most posts</b></a> || <a style='color:gray' href="?order=ma">most authors</a> || <a style='color:gray' href="?order=mr">recent</a> || <a style='color:gray' href="?order=alp">alphabitcal</a></p>
+  {% elif order == 'ma' %}
+  	<p>tags <a style='color:gray' href="?order=mp">most posts</a> || <a style='color:black' href="?order=ma"><b>most authors</b></a> || <a style='color:gray' href="?order=mr">recent</a> || <a style='color:gray' href="?order=alp">alphabitcal</a></p>
+  {% elif order == 'mr' %}
+  	<p>tags <a style='color:gray' href="?order=mp">most posts</a> || <a style='color:gray' href="?order=ma">most authors</a> || <a style='color:black' href="?order=mr"><b>recent</b></a> || <a style='color:gray' href="?order=alp">alphabitcal</a></p>
+  {% else %}
+  	<p>tags <a style='color:gray' href="?order=mp">most posts</a> || <a style='color:gray' href="?order=ma">most authors</a> || <a style='color:gray' href="?order=mr">recent</a> || <a style='color:black' href="?order=alp"><b>alphabitcal</b></a></p>
+  {% endif %}
     {% for tag in tags %} 
      	<div class="list_indent">
-        <a class="mr-2" href="{% url 'tag-post-list' tag.id %}">{{ tag.name }}</a> - {{ article_count|get_item:tag.name }} articles {{ author_count|get_item:tag.name }} authors 
+        <a class="mr-2" href="{% url 'tag-post-list' tag.1 %}">{{ tag.0 }}</a> - {{ tag.2 }} articles {{ tag.3 }} authors <small class="text-muted">{{ tag.4|date:"y M d H:m" }}</small>
     	</div> 
     {% endfor %}
   {% endif %}
@@ -37,25 +76,23 @@
 	{% if is_paginated %}
 	<div class="float-right">
     {% if page_obj.has_previous %}
-	    <a class="btn btn-sm btn-outline-info mb-4" href="?page=1">first</a>
-			<a class="btn btn-sm btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">prev</a>
+	    <a class="btn btn-sm btn-outline-info mb-4" href="?page=1&order={{ order }}">first</a>
 	  {% endif %}
 
 	  {% for num in page_obj.paginator.page_range %}
       {% if page_obj.number == num %}
-		  	<a class="btn btn-sm btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+		  	<a class="btn btn-sm btn-info mb-4" href="?page={{ num }}&order={{ order }}">{{ num }}</a>
 			{% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-	      <a class="btn btn-sm btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+	      <a class="btn btn-sm btn-outline-info mb-4" href="?page={{ num }}&order={{ order }}">{{ num }}</a>
 			{% endif %}
 		{% endfor %}
 
     {% if page_obj.has_next %}
-	    <a class="btn btn-sm btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">next</a>
-		 	<a class="btn btn-sm btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">last</a>
+		 	<a class="btn btn-sm btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}&order={{ order }}">last</a>
 	  {% endif %}
 	</div>
 	{% endif %}
-  <br/>
+  <br>
 </div>
 {% endblock content %}
 
