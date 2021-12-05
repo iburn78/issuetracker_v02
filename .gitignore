@@ -132,4 +132,4 @@ dmypy.json
 config.json
 post_imgs/
 settings.py
-static/
+# static/
