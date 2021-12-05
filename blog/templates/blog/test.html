@@ -23,7 +23,7 @@
           <span class="link_name">Dashboard</span>
         </a>
         <ul class="sub-menu blank">
-          <li><a class="link_name" href="#">Category</a></li>
+          <li><a class="link_name" href="#">opacity Category</a></li>
         </ul>
       </li>
       <li>
@@ -149,6 +149,12 @@
     console.log(sidebarBtn);
     sidebarBtn.addEventListener("click", ()=>{
       sidebar.classList.toggle("close");
+    });
+    document.querySelector(document).ready(function() {
+      document.querySelector('li .sub-menu').addEventListener('touchstart touchend', function(e) {
+        e.preventDefault();
+        document.querySelector(this).classList.toggle('hover_effect');
+      });
     });
   </script>
 </body>
