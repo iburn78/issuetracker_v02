@@ -343,6 +343,8 @@ class PrivatePostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView)
 def about(request):
     return render(request, 'blog/about.html')
 
+def test(request):
+    return render(request, 'blog/test.html')
 
 def milo(request):
     return render(request, 'blog/milo_test.html')
