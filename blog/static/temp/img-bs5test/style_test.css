@@ -120,9 +120,8 @@
   opacity: 0.6;
   transition: all 0.3s ease;
 }
-.sidebar .nav-links li .sub-menu a:hover,
-.sidebar .nav-links li .sub-menu.hover_effect a{
-  opacity: 0.2;
+.sidebar .nav-links li .sub-menu a:hover{
+  opacity: 1;
 }
 .sidebar.close .nav-links li .sub-menu{
   position: absolute;
@@ -137,7 +136,7 @@
   transition: 0s;
 }
 .sidebar.close .nav-links li:hover .sub-menu, 
-.sidebar.close .nav-links li .sub-menu.hover_effect{
+.sidebar.close .nav-links li.hover_effect .sub-menu{
   top: 0;
   opacity: 1;
   pointer-events: auto;
