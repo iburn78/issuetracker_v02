@@ -154,20 +154,10 @@
     let bxes = document.querySelectorAll('.sidebar.close .nav-links li');
     for (var i = 0; i < bxes.length; i++) {
       bxes[i].addEventListener('click', function(e) {
-      console.log("hello");
-      e.preventDefault();
-      this.classList.toggle('hover_effect');
-    });
-      bxes[i].addEventListener('touchstart', function(e) {
-      console.log("hello");
-      e.preventDefault();
-      this.classList.toggle('hover_effect');
-    });
-      bxes[i].addEventListener('touchend', function(e) {
-      console.log("hello");
-      e.preventDefault();
-      this.classList.toggle('hover_effect');
-    });
+        console.log("hello");
+        e.preventDefault();
+        this.classList.toggle('hover_effect');
+      });
     }
   </script>
 </body>
