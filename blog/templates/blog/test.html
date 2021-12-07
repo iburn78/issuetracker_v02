@@ -153,7 +153,7 @@
     });
     let bxes = document.querySelectorAll('.sidebar.close .nav-links li');
     for (var i = 0; i < bxes.length; i++) {
-      bxes[i].addEventListener('click', function(e) {
+      bxes[i].addEventListener('touchstart', function(e) {
         console.log("hello");
         // alert("clicked");
         e.preventDefault();
