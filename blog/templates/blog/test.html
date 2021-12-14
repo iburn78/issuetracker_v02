@@ -151,11 +151,11 @@
     sidebarBtn.addEventListener("click", ()=>{
       sidebar.classList.toggle("close");
     });
-    let bxes = document.querySelectorAll('.sidebar.close .nav-links li');
+    let bxes = document.querySelectorAll('.bx');
     for (var i = 0; i < bxes.length; i++) {
-      bxes[i].addEventListener('click', function(e) {
+      bxes[i].addEventListener('touchstart', function(e) {
         console.log("hello");
-        // alert("clicked");
+        alert("clicked");
         e.preventDefault();
         this.classList.toggle('hover_effect');
       });
