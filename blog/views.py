@@ -346,6 +346,9 @@ def about(request):
 def test(request):
     return render(request, 'blog/test.html')
 
+def nav(request):
+    return render(request, 'blog/nav.html')
+
 def milo(request):
     return render(request, 'blog/milo_test.html')
 
