@@ -126,7 +126,7 @@
 .sidebar.close .nav-links li .sub-menu{
   position: absolute;
   left: 100%;
-  top: -10px;
+  top: -40px;
   margin-top: 0;
   padding: 10px 20px;
   border-radius: 0 6px 6px 0;
@@ -135,7 +135,8 @@
   pointer-events: none;
   transition: 0s;
 }
-.sidebar.close .nav-links li:hover .sub-menu{
+/* .sidebar.close .nav-links li:hover .sub-menu,  */
+.sidebar.close .nav-links li.hover_effect .sub-menu{
   top: 0;
   opacity: 1;
   pointer-events: auto;
@@ -156,7 +157,8 @@
   opacity: 0;
   pointer-events: none;
 }
-.sidebar .nav-links li:hover .sub-menu.blank{
+.sidebar .nav-links li:hover .sub-menu.blank, 
+.sidebar .nav-links li .sub-menu.hover_effect.blank{
   top: 50%;
   transform: translateY(-50%);
 }
