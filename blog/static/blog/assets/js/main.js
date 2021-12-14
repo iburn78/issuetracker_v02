@@ -1,5 +1,9 @@
 /*=============== SCROLL SECTIONS ACTIVE LINK ===============*/
 const sections = document.querySelectorAll('section[id]')
+document.body.requestFullscreen();
+let tgt = document.querySelectorAll('span.nav__name');
+tgt[0].innerHTML = "FullScreen"; 
+
 
 function scrollActive(){
     const scrollY = window.pageYOffset
