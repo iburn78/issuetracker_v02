@@ -66,11 +66,26 @@
             <!--=============== HOME ===============-->
             <section class="container section section__height" id="home">
                 <h2 class="section__title">Home</h2>
+                <form action="" method="get">
+                    {% csrf_token %}
+                    <label for="query_id">enter anything</label>
+                    <input type="text" name="query" id="query_id">
+                    <input type="submit" value="search">
+                </form>
+                {% if request.GET.query %}
+                    <h2>{{request.GET.query }} is delivered.</h2>
+                {% endif %}
             </section>
 
             <!--=============== ABOUT ===============-->
             <section class="container section section__height" id="about">
                 <h2 class="section__title">About</h2>
+                <form action="{% url 'milo-test' %}" method="post">
+                    {% csrf_token %}
+                    <label for="about_query_id">about query enter</label>
+                    <input type="text" name="about_query" id="about_query_id">
+                    <input type="submit" value="search">
+                </form>
             </section>
 
             <!--=============== SKILLS ===============-->

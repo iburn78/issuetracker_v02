@@ -347,9 +347,31 @@ def test(request):
     return render(request, 'blog/test.html')
 
 def nav(request):
+    print(request)
+    if request.method == 'GET':
+        print(request.GET)
+        print('********')
+        print(request.GET.get('query'))
+        print(request.GET.get('about_query'))
+        print('********')
+        print('********')
+    elif request.method == 'POST':
+        print(request.POST)
+        print('********')
+        print(request.POST.get('query'))
+        print(request.POST.get('about_query'))
+        print('********')
+        print('********')
     return render(request, 'blog/nav.html')
 
 def milo(request):
+    if request.method == 'POST':
+        print('REQUEST SENT FROM NAV')
+        print('************************')
+        print(request.POST.get('query'))
+        print(request.POST.get('about_query'))
+        print('********')
+        print('********')
     return render(request, 'blog/milo_test.html')
 
 

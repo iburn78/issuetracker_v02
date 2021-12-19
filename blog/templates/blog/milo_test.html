@@ -85,6 +85,9 @@
       <div class="container">
         <div class="pt-4 pb-4 text-center">
           <h1 class="mb-3">Choose any of these & create your own beautiful blog.</h1>
+          {% if request.POST.about_query %}
+            <h2>{{request.POST.about_query }} is delivered.</h2>
+          {% endif %}
           <p class="mb-4">All of the sample layouts are included with your download. Select an example layout below to preview!</p>
           <a href="https://themes.getbootstrap.com/product/milo-magazineblog-theme/" target="_blank" class="btn btn-success btn-lg">Purchase theme</a>
         </div>

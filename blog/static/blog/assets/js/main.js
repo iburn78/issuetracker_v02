@@ -1,12 +1,10 @@
 /*=============== SCROLL SECTIONS ACTIVE LINK ===============*/
 const sections = document.querySelectorAll('section[id]');
-document.body.requestFullscreen();
-let tgt = document.querySelectorAll('span.nav__name');
-tgt[0].innerHTML = "FullScreen"; 
+// document.body.requestFullscreen();
 
 
 function scrollActive(){
-    const scrollY = window.pageYOffset
+    const scrollY = window.pageYOffset;
 
     sections.forEach(current =>{
         const sectionHeight = current.offsetHeight,

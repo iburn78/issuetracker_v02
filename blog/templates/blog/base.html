@@ -1,125 +1,125 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
-    <head>
-    	<!-- Required meta tags -->
-    	<meta charset="utf-8">  <!-- base language for HTML5 is utf-8 -->
-    	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <meta property="og:title" content="IssueTracker - organize your issues">
-        <meta property="og:description" content="track and search issues effectively">
-        <meta property="og:image" content="{% static 'blog/thumbnail_issuetracker.jpg' %}">
-
-    	<!-- Bootstrap CSS -->
-    	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-      <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
-      <link rel="stylesheet" href="{% static 'blog/tagsinput.css' %}" />
-      <link rel="stylesheet" href="{% static 'blog/issuetracker_style.css' %}" />
-      <!-- link href="{% static 'css/app.css' %}" rel="stylesheet" -->
-
-    	<!-- Website title and logo -->
-		  <title>IssueTracker</title>
-      <link rel="icon" href="{% static 'blog/IssueTracker_Logo.png' %}">
-      <script src="https://cdn.tiny.cloud/1/d3ybxjdg3551popw6ium8p70cc82tgln8qwiu8yrc9x9v6rm/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script> 
-      <script>tinymce.init({selector:'textarea'});</script>
-    </head>
-    <body onload="init()">
-        <header class="site-header">
-          <nav class="navbar navbar-expand-lg navbar-dark bg-steel fixed-top"> 
-            <div class="container">
-				      <a class="navbar-brand mr-4" href="{% url 'blog-home' %}">IssueTracker<small><i>(beta)</i></small></a>
-              <button id="navbar-toggle-button" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse" id="navbarToggle">
-              
-                <div class="navbar-nav mr-auto">
-                  <a class="nav-item nav-link" href="{% url 'blog-home' %}">post</a>
-		       {% if user.is_authenticated %}
-                  <a class="nav-item nav-link" href="{% url 'post-private' user %}">private</a>
-		       {% endif %}
-                </div>
-                <!-- Navbar Right Side -->
-                <div class="navbar-nav">
-		                {% if user.is_authenticated %}
-		                   <a class="nav-item nav-link" href="{% url 'post-create' %}">new post</a>
-		                   <a class="nav-item nav-link" href="{% url 'privatepost-create' %}">new private</a>
-		                   <a class="nav-item nav-link" href="{% url 'logout' %}">logout</a>
-		                {% else %}
-                       <a class="nav-item nav-link" href="{% url 'login' %}">login</a>
-                       <a class="nav-item nav-link" href="{% url 'register' %}">register</a>
-		                {% endif %}
-                       <li class="nav-item dropdown">
-                       <a class="nav-item nav-link dropdown-toggle" id="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">more</a>
-                       <div class="nav-item dropdown-menu bg-steel" aria-labelledby="dropdown">
-                           <a class="dropdown-item nav-item nav-link" href="{% url 'author-list' %}">&nbsp author list</a>
-                           <a class="dropdown-item nav-item nav-link" href="{% url 'tag-list' %}">&nbsp tag list</a>
-		                       {% if user.is_authenticated %}
-                             <a class="dropdown-item nav-item nav-link" href="{% url 'privatetag-list' user %}">&nbsp private tag list</a>
-                             <a class="dropdown-item nav-item nav-link" href="{% url 'profile' %}">&nbsp profile</a>
-		                       {% endif %}
-                           <a class="dropdown-item nav-item nav-link" href="{% url 'blog-about' %}">&nbsp about</a>
-                       </div>
-                      </li>
-                    <form class="nav-item form-inline" action="{% url 'search-form' %}" role="search" method="POST" autocomplete="off">
-                      {% csrf_token %}
-                      <input id="inline-search-form" name="search_term" class="nav-item" type="text" title="Enter search query here.." placeholder="Search.." aria-label="Search">
-                    </form>
-		                {% if user.is_authenticated %}
-                    <form class="nav-item form-inline" action="{% url 'privatesearch-form' %}" role="search" method="POST" autocomplete="off">
-                      {% csrf_token %}
-                      <input id="inline-search-form" name="search_term" class="nav-item" type="text" title="Enter private search query here.." placeholder="Private Search.." aria-label="Search">
-                    </form>
-		                {% endif %}
-                </div>
-              </div>
-            </div>
-          </nav>
-        </header>
-
-        <main role="main" class="container">
-          <div class="row">
-            <div class="col-lg-9">
-      	      {% if messages %}
-      	        {% for message in messages %}
-      		        <div class="alert alert-{{ message.tags }}">
-      			        {{ message }}
-      	 	        </div>
-        		    {% endfor %}
-	            {% endif %} 
-              {% block content %}{% endblock %}
-            </div>
-            <div class="col-lg-3">
-              <div class="content-section">
-		            <h5><img class="article-img" src="{% static 'blog/IssueTracker_Logo.png' %}">IssueTracker<small><i>(beta)</i></small></h5>
-                to be implemented
-                <ul class="list-group">
-                  <li class="list-group-item list-group-item-light">popular tags</li>
-                  <li class="list-group-item list-group-item-light">popular users</li>
-                  <li class="list-group-item list-group-item-light">today's weather / stock price / etc</li>
-                  <li class="list-group-item list-group-item-light">feature articles</li>
-                </ul>
-              </div>
-            </div>
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">  <!-- base language for HTML5 is utf-8 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta property="og:title" content="IssueTracker - organize your issues">
+  <meta property="og:description" content="track and search issues effectively">
+  <meta property="og:image" content="{% static 'blog/thumbnail_issuetracker.jpg' %}">
+  
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
+  <link rel="stylesheet" href="{% static 'blog/tagsinput.css' %}" />
+  <link rel="stylesheet" href="{% static 'blog/issuetracker_style.css' %}" />
+  <!-- link href="{% static 'css/app.css' %}" rel="stylesheet" -->
+  
+  <!-- Website title and logo -->
+  <title>IssueTracker</title>
+  <link rel="icon" href="{% static 'blog/IssueTracker_Logo.png' %}">
+  <script src="https://cdn.tiny.cloud/1/d3ybxjdg3551popw6ium8p70cc82tgln8qwiu8yrc9x9v6rm/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script> 
+  <script>tinymce.init({selector:'textarea'});</script>
+</head>
+<body onload="init()">
+  <header class="site-header">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-steel fixed-top"> 
+      <div class="container">
+        <a class="navbar-brand mr-4" href="{% url 'blog-home' %}">IssueTracker<small><i>(beta)</i></small></a>
+        <button id="navbar-toggle-button" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarToggle">
+          
+          <div class="navbar-nav mr-auto">
+            <a class="nav-item nav-link" href="{% url 'blog-home' %}">post</a>
+            {% if user.is_authenticated %}
+            <a class="nav-item nav-link" href="{% url 'post-private' user %}">private</a>
+            {% endif %}
           </div>
-        </main>
-		
-		<!-- Optional JavaScript -->
-		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-   	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="/static/js/tagsinput.js"></script>
-    <script type="text/javascript">
-        function init() {
-            document.body.addEventListener('click', close, true);
-        };
-        function close(event) {
-                var _opened = document.getElementById("navbarToggle").classList.contains("show");
-                if (_opened === true && event.target.classList.contains("nav-item") === false ) {
-                    document.getElementById("navbar-toggle-button").click();
-                    event.preventDefault();
-                }
-            };
-    </script>   
-    </body>
+          <!-- Navbar Right Side -->
+          <div class="navbar-nav">
+            {% if user.is_authenticated %}
+            <a class="nav-item nav-link" href="{% url 'post-create' %}">new post</a>
+            <a class="nav-item nav-link" href="{% url 'privatepost-create' %}">new private</a>
+            <a class="nav-item nav-link" href="{% url 'logout' %}">logout</a>
+            {% else %}
+            <a class="nav-item nav-link" href="{% url 'login' %}">login</a>
+            <a class="nav-item nav-link" href="{% url 'register' %}">register</a>
+            {% endif %}
+            <li class="nav-item dropdown">
+              <a class="nav-item nav-link dropdown-toggle" id="dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">more</a>
+              <div class="nav-item dropdown-menu bg-steel" aria-labelledby="dropdown">
+                <a class="dropdown-item nav-item nav-link" href="{% url 'author-list' %}">&nbsp author list</a>
+                <a class="dropdown-item nav-item nav-link" href="{% url 'tag-list' %}">&nbsp tag list</a>
+                {% if user.is_authenticated %}
+                <a class="dropdown-item nav-item nav-link" href="{% url 'privatetag-list' user %}">&nbsp private tag list</a>
+                <a class="dropdown-item nav-item nav-link" href="{% url 'profile' %}">&nbsp profile</a>
+                {% endif %}
+                <a class="dropdown-item nav-item nav-link" href="{% url 'blog-about' %}">&nbsp about</a>
+              </div>
+            </li>
+            <form class="nav-item form-inline" action="{% url 'search-form' %}" role="search" method="POST" autocomplete="off">
+              {% csrf_token %}
+              <input id="inline-search-form" name="search_term" class="nav-item" type="text" title="Enter search query here.." placeholder="Search.." aria-label="Search">
+            </form>
+            {% if user.is_authenticated %}
+            <form class="nav-item form-inline" action="{% url 'privatesearch-form' %}" role="search" method="POST" autocomplete="off">
+              {% csrf_token %}
+              <input id="inline-search-form" name="search_term" class="nav-item" type="text" title="Enter private search query here.." placeholder="Private Search.." aria-label="Search">
+            </form>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+  
+  <main role="main" class="container">
+    <div class="row">
+      <div class="col-lg-9">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+          {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %} 
+        {% block content %}{% endblock %}
+      </div>
+      <div class="col-lg-3">
+        <div class="content-section">
+          <h5><img class="article-img" src="{% static 'blog/IssueTracker_Logo.png' %}">IssueTracker<small><i>(beta)</i></small></h5>
+          to be implemented
+          <ul class="list-group">
+            <li class="list-group-item list-group-item-light">popular tags</li>
+            <li class="list-group-item list-group-item-light">popular users</li>
+            <li class="list-group-item list-group-item-light">today's weather / stock price / etc</li>
+            <li class="list-group-item list-group-item-light">feature articles</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <script src="/static/js/tagsinput.js"></script>
+  <script type="text/javascript">
+    function init() {
+      document.body.addEventListener('click', close, true);
+    };
+    function close(event) {
+      var _opened = document.getElementById("navbarToggle").classList.contains("show");
+      if (_opened === true && event.target.classList.contains("nav-item") === false ) {
+        document.getElementById("navbar-toggle-button").click();
+        event.preventDefault();
+      }
+    };
+  </script>   
+</body>
 </html>
